@@ -1164,3 +1164,12 @@ height: 550px;
 .interior div#MainCopy_ContentWrapper {
 	border-style: none;
 }
+
+/*calendar icons*/
+.calendar-day{
+	display: none;
+}
+
+.calendary-number{}
+
+.calendar-month{}
