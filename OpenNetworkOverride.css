@@ -1166,10 +1166,39 @@ height: 550px;
 }
 
 /*calendar icons*/
+.date-block{
+	border-top-color: #9a9b9c;
+	border-top-style: solid;
+
+	border-right-color: #9a9b9c;
+	border-right-style: solid;
+		
+	border-left-color: #9a9b9c;
+	border-left-style: solid;
+	
+	border-bottom-color: #9a9b9c;
+	border-bottom-style: solid;
+	
+	box-sizing: border-box;
+	margin: auto;
+	max-width: 100px;
+}
 .calendar-day{
 	display: none;
 }
 
-.calendary-number{}
+.calendary-number{
+	color: #009EE1;
+	box-sizing: border-box;
+	font-size: 30px;
+}
 
-.calendar-month{}
+.calendar-month{
+	color: white;
+	background-color: #9a9b9c;
+
+}
+
+.title-row{
+	padding-left: 10px;
+}
