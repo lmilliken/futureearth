@@ -1,43 +1,14 @@
 import React, { Component } from 'react';
+import Investigator from './Investigator';
 
-import SelectCountry from './SelectCountry'
 
 
 class InvestigatorCo extends Component {
   render() {
     return (
-        <div class="container applicant border border-light">
-                <div class="form-row">
-                    <div class="form-group col-md-6">        
-                        <label for="firstName">First Name</label>
-                        <input class="form-control" type="text" name="firstName" id="firstName"/>
-                    </div>  
-                    <div class="form-group col-md-6">        
-                        <label for="lastName">Last Name</label>
-                        <input class="form-control" type="text" name="lastName"  id="lastName"/>
-                    </div>  
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">        
-                        <label for="email">Email</label>
-                        <input required class="form-control" type="text" name="email"  id="email"/>
-                    </div>  
-                    <div class="form-group col-md-6">        
-                        <label for="institution">Institution</label>
-                        <input class="form-control" type="text" name="Institution" id="institution"/>
-                    </div>
-                </div>
-                <div class="form-row">    
-                    <div class="form-group col-md-6">
-                        <label for="countryCitizenship">Country of Citizenship</label>
-                        <SelectCountry name="countryCitizenship"/>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="countryWork">Country of Work</label>
-                        <SelectCountry name="countryWork"/>
-                    </div>
-                </div>
-                <center><button type="button" class="btn btn-outline-danger">Remove</button></center>
+        <div class="container applicant-co border border-light">
+                <Investigator firstName={this.props.firstName} lastName={this.props.lastName} email={this.props.email} institution={this.props.institution} countryCitizenship={this.props.countryCitizenship} countryWork={this.props.countryWork} handleChange={this.props.handleChange}/>
+                <center><button type="button" onClick={this.props.remove} class="btn btn-outline-danger">Remove</button></center>
             </div>
     );
   }

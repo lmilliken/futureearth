@@ -3,38 +3,38 @@ import React, { Component } from 'react';
 import SelectCountry from './SelectCountry'
 
 
-class InvestigatorLead extends Component {
+class Investigator extends Component {
   render() {
     return (
         <div class="container applicant">
                 <div class="form-row">
                     <div class="form-group col-md-6">        
                         <label for="firstName">First Name</label>
-                        <input class="form-control" type="text" name="firstName" id="firstName"/>
+                        <input class="form-control" type="text" name="firstName" id="firstName" onChange={this.props.handleChange}/>
                     </div>  
                     <div class="form-group col-md-6">        
                         <label for="lastName">Last Name</label>
-                        <input class="form-control" type="text" name="lastName"  id="lastName"/>
+                        <input class="form-control" type="text" name="lastName"  id="lastName" onChange={this.props.handleChange}/>
                     </div>  
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">        
                         <label for="email">Email</label>
-                        <input required class="form-control" type="text" name="email"  id="email"/>
+                        <input required class="form-control" type="text" name="email"  id="email" onChange={this.props.handleChange}/>
                     </div>  
                     <div class="form-group col-md-6">        
                         <label for="institution">Institution</label>
-                        <input class="form-control" type="text" name="Institution" id="institution"/>
+                        <input class="form-control" type="text" name="institution" id="institution" onChange={this.props.handleChange}/>
                     </div>
                 </div>
                 <div class="form-row">    
                     <div class="form-group col-md-6">
-                        <label for="countryCitizenship">Country of Citizenship</label>
-                        <SelectCountry name="countryCitizenship"/>
+                        <label for="countryCitizenship" onChange={this.props.handleChange}>Country of Citizenship</label>
+                        <SelectCountry name="countryCitizenship" onChange={this.props.handleChange}/>
                     </div>
                     <div class="form-group col-md-6">
                         <label for="countryWork">Country of Work</label>
-                        <SelectCountry name="countryWork"/>
+                        <SelectCountry name="countryWork" onChange={this.props.handleChange}/>
                     </div>
                 </div>
             </div>
@@ -42,4 +42,4 @@ class InvestigatorLead extends Component {
   }
 }
 
-export default InvestigatorLead;
+export default Investigator;

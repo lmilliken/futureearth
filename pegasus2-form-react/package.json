@@ -1,7 +1,7 @@
 {
   "name": "pegasus2-form-react",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "dependencies": {
     "react": "^16.4.2",
     "react-bootstrap": "^0.32.1",
