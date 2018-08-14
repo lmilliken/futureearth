@@ -39,7 +39,7 @@ class App extends Component {
     this.handleRemove = this.handleRemove.bind(this);
     this.handleTitle = this.handleTitle.bind(this);
     this.handleLeadChange = this.handleLeadChange.bind(this)
-    this.handleCoChange = this.handleCoChange.bind(this)
+    //this.handleCoChange = this.handleCoChange.bind(this)
   }
 
   handleAdd(){
@@ -57,20 +57,21 @@ class App extends Component {
       })
   };
 
-  handleLeadChange(event){
-    console.log(event.target.name)
-    var prop = event.target.name
-    var value = event.target.value
-    console.log('event name', prop)
+  handleLeadChange(field, value){
+     console.log("field", field)
+    // var prop = event.target.name
+    // var value = event.target.value
+    // console.log('event name', prop)
    // this.setState({investigatorLead: {prop: value}}, console.log("lead", this.state.investigatorLead))
 
-    var newLead = {...this.state.investigatorLead, [prop]: value };
+    var newLead = {...this.state.investigatorLead, [field]: value };
     this.setState({investigatorLead: newLead}, ()=>{console.log(this.state.investigatorLead)})
   }
 
-  handleCoChange(event){
-   console.log("changed co investigor",   event.target.value)
-  }
+  // handleCoChange(prop, value, index){
+  //  console.log("event", event)
+  //  console.log("index", index)
+  // }
 
   handleRemove(index){
     console.log('index', index)
@@ -88,12 +89,13 @@ class App extends Component {
 
   render() {
 
-    var investigator = () =>{
-      var lead = this.state.investigatorLead
-      return <Investigator firstName={lead.firstName} lastName={lead.lastName} email={lead.email} institution={lead.institution} countryCitizenship={lead.countryCitizenship} countryWork={lead.countryWork} handleChange={this.handleLeadChange} />}
+    //this is not working
+    // var investigator = () =>{
+    //   var lead = this.state.investigatorLead
+    //   return <Investigator firstName={lead.firstName} lastName={lead.lastName} email={lead.email} institution={lead.institution} countryCitizenship={lead.countryCitizenship} countryWork={lead.countryWork} handleChange={this.handleLeadChange} />}
     
     var coInvestigators = this.state.InvestigatorCo.map(
-      (item, index)=>{return <InvestigatorCo key={index} index={index} firstName={item.firstName} lastName={item.lastName} email={item.email} institution={item.institution} countryCitizenship={item.countryCitizenship} countryWork={item.countryWork} handleChange={this.handleCoChange} remove={this.handleRemove}/>}
+      (item, index)=>{return <InvestigatorCo key={index} index={index} firstName={item.firstName} lastName={item.lastName} email={item.email} institution={item.institution} countryCitizenship={item.countryCitizenship} countryWork={item.countryWork} remove={this.handleRemove}/>}
     );
     var lead = this.state.investigatorLead
 
