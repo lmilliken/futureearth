@@ -20,7 +20,7 @@ removeCo(index){
 }
 
 const divStyle = {
-    paddingBottom: '10px',
+    padding: '10px 0px 10px 0px',
     margin: '15px',
     border: '1px solid 	#DCDCDC',
     borderRadius: '5px'

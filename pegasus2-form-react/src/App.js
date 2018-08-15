@@ -136,7 +136,7 @@ class App extends Component {
 
           <div class="form-group">
                   <label for="uploadBudget">Upload your budget.</label>
-                  <input id="uploadBudget" type="file" name="uploadBudget"/>
+                  <input id="uploadBudget" type="file" name="uploadBudget" accept=".pdf"/>
           </div>
 
 
@@ -152,7 +152,7 @@ class App extends Component {
 }
 
 const submitStyle = {
-  padding: '15px'
+  margin: '15px'
 };
 
 export default App;
