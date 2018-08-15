@@ -2,22 +2,24 @@ import React, { Component } from 'react';
 
 import Investigator from './components/Investigator';
 import InvestigatorCo from './components/InvestigatorCo';
+const uuidv1 = require('uuid/v1');
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: '',
-      investigatorLead: {
+      investigatorLead: [{
         firstName: '',
         lastName: '',
         email: '',
         institution: '',
         countryCitizenship: '',
         countryWork: ''
-      },
-      InvestigatorCo: [
+      }],
+      investigatorCo: [
         {
+          key: uuidv1(),
           firstName: '',
           lastName: '',
           email: '',
@@ -26,6 +28,7 @@ class App extends Component {
           countryWork: ''
         },
         {
+          key: uuidv1(),
           firstName: '',
           lastName: '',
           email: '',
@@ -39,12 +42,13 @@ class App extends Component {
     this.handleRemove = this.handleRemove.bind(this);
     this.handleTitle = this.handleTitle.bind(this);
     this.handleLeadChange = this.handleLeadChange.bind(this)
-    //this.handleCoChange = this.handleCoChange.bind(this)
+    this.handleCoChange = this.handleCoChange.bind(this)
   }
 
   handleAdd(){
-    var coInvestigators = this.state.InvestigatorCo
+    var coInvestigators = this.state.investigatorCo
         coInvestigators.push({
+            key: uuidv1(),
             firstName: '',
             lastName: '',
             email: '',
@@ -53,33 +57,34 @@ class App extends Component {
             countryWork: ''
           })
     this.setState({
-      InvestigatorCo: coInvestigators
-      })
+      investigatorCo: coInvestigators
+      }, ()=>{console.log("new state: ", this.state)})
   };
 
-  handleLeadChange(field, value){
-     console.log("field", field)
-    // var prop = event.target.name
-    // var value = event.target.value
-    // console.log('event name', prop)
-   // this.setState({investigatorLead: {prop: value}}, console.log("lead", this.state.investigatorLead))
-
-    var newLead = {...this.state.investigatorLead, [field]: value };
-    this.setState({investigatorLead: newLead}, ()=>{console.log(this.state.investigatorLead)})
+  handleLeadChange(_, field, value){
+    var newLead = this.state.investigatorLead.slice()
+    newLead[0][field] = value
+    this.setState({investigatorLead: newLead}, ()=>{console.log("updateded state: ", this.state)})
   }
 
-  // handleCoChange(prop, value, index){
-  //  console.log("event", event)
-  //  console.log("index", index)
-  // }
+  handleCoChange(index, field, value){
+  console.log("handle co change at index: ", index)  
+  console.log("handle co change at field: ", field)  
+  console.log("handle co change at value: ", value)  
+    var tempArray = this.state.investigatorCo
+    tempArray[index][field] = value
+    this.setState({investigatorCo: tempArray}, ()=>{console.log("updateded state: ", this.state)} )
+  }
 
   handleRemove(index){
     console.log('index', index)
-    var coInvestigators = this.state.InvestigatorCo
+    var coInvestigators = this.state.investigatorCo.slice()
     coInvestigators.splice(index,1)
+    console.log("new co investigators: ", coInvestigators)
 
     this.setState(
-      {InvestigatorCo: coInvestigators}
+      {investigatorCo: coInvestigators}
+      ,()=>{console.log("updateded state after remove: ", this.state)}
     )
   }
 
@@ -94,15 +99,15 @@ class App extends Component {
     //   var lead = this.state.investigatorLead
     //   return <Investigator firstName={lead.firstName} lastName={lead.lastName} email={lead.email} institution={lead.institution} countryCitizenship={lead.countryCitizenship} countryWork={lead.countryWork} handleChange={this.handleLeadChange} />}
     
-    var coInvestigators = this.state.InvestigatorCo.map(
-      (item, index)=>{return <InvestigatorCo key={index} index={index} firstName={item.firstName} lastName={item.lastName} email={item.email} institution={item.institution} countryCitizenship={item.countryCitizenship} countryWork={item.countryWork} remove={this.handleRemove}/>}
+    var coInvestigators = this.state.investigatorCo.map(
+      (item, index)=>{return <InvestigatorCo key={item.key} index={index} firstName={item.firstName} lastName={item.lastName} email={item.email} institution={item.institution} countryCitizenship={item.countryCitizenship} countryWork={item.countryWork} handleChange={this.handleCoChange} remove={this.handleRemove}/>}
     );
-    var lead = this.state.investigatorLead
+    var lead = this.state.investigatorLead[0]
 
     return (
       <div className="App container">
         <head>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+        {/* <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/> */}
         </head>
       <form>
          <div class="container form-row">
@@ -138,12 +143,16 @@ class App extends Component {
           <center>
           <input type="checkbox" name="checkbox" value="check" id="agree" /> By submitting this form, I agree to research, innovation, sustainability, and the Oxford comma.
           <br/>
-            <button type="submit" class="btn btn-primary">Submit</button></center>
+            <button type="submit" class="btn btn-primary" style={submitStyle}>Submit</button></center>
       </form>
         
       </div>
     );
   }
 }
+
+const submitStyle = {
+  padding: '15px'
+};
 
 export default App;
