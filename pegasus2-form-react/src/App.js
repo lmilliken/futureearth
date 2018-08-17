@@ -64,7 +64,7 @@ class App extends Component {
   handleLeadChange(_, field, value){
     var newLead = this.state.investigatorLead.slice()
     newLead[0][field] = value
-    this.setState({investigatorLead: newLead}, ()=>{console.log("updateded state: ", this.state)})
+    this.setState({investigatorLead: newLead}, ()=>{console.log("updated state: ", this.state)})
   }
 
   handleCoChange(index, field, value){
@@ -73,7 +73,7 @@ class App extends Component {
   console.log("handle co change at value: ", value)  
     var tempArray = this.state.investigatorCo
     tempArray[index][field] = value
-    this.setState({investigatorCo: tempArray}, ()=>{console.log("updateded state: ", this.state)} )
+    this.setState({investigatorCo: tempArray}, ()=>{console.log("updated state: ", this.state)} )
   }
 
   handleRemove(index){
@@ -122,11 +122,11 @@ class App extends Component {
     return (
       <div className="App container">
         <head>
-        {/* <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>  http://localhost:8081/submit*/}
+        {/* <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/> "https://rocky-harbor-45956.herokuapp.com/submit"  "http://localhost:8081/submit"*/}
         </head>
 
         
-      <form enctype="multipart/form-data" action="https://rocky-harbor-45956.herokuapp.com/submit" method="POST">
+      <form enctype="multipart/form-data" action="http://localhost:8081/submit" method="POST">
          <div class="container form-row">
                     <div class="form-group col-md-12">        
                         <label for="proposalTitle">Full Title of Proposal:</label>

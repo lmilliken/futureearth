@@ -8,7 +8,7 @@ const path = require('path')
 const storage = multer.diskStorage({
     destination: './public/uploads',
     filename: function(req, file, cb){
-        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+        cb(null, req.body.lastName[0] + '_' + file.fieldname.substring(6) + '-' + Date.now() + path.extname(file.originalname))
     }
 })
 
@@ -28,7 +28,8 @@ app.use(cors());
 
 
 app.post('/submit', upload.any(), (req, res)=>{
-    console.log(req)
+    console.log("here is the request: ", req)
+    res.send('OK')
     // uploadProposal(req,res, (err)=>{
     //     if(err){
     //         console.log('error you fool! ', err)
@@ -46,7 +47,7 @@ app.post('/submit', upload.any(), (req, res)=>{
     //         res.send('test')
     //     }
     // })
-})
+});
 
 app.listen(port, ()=>{
     console.log(`Server is up on port ${port}`)
