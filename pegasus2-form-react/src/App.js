@@ -92,6 +92,21 @@ class App extends Component {
     this.setState({ title: event.target.value }, ()=>{console.log(this.state)})
   }
 
+  handleSubmit(event){
+    event.preventDefault();
+    const data = new FormData(event.target);
+    console.log("data", data)
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", 'http://localhost:8081/submit', true);
+    //xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(data);
+
+    // fetch('http://localhost:8080/submit', {
+    //   method: 'POST',
+    //   body: data,
+    // }).then((res)=>console.log('response from server: ', res));
+  }
+
   render() {
 
     //this is not working
@@ -109,7 +124,7 @@ class App extends Component {
         <head>
         {/* <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/> */}
         </head>
-      <form>
+      <form enctype="multipart/form-data" action="http://localhost:8081/submit" method="POST">
          <div class="container form-row">
                     <div class="form-group col-md-12">        
                         <label for="proposalTitle">Full Title of Proposal:</label>
@@ -141,7 +156,7 @@ class App extends Component {
 
 
           <center>
-          <input type="checkbox" name="checkbox" value="check" id="agree" /> By submitting this form, I agree to research, innovation, sustainability, and the Oxford comma.
+          <input type="checkbox" name="checkbox" value="check" id="agree" /> By submitting this form I agree to research, innovation, sustainability, and the Oxford comma.
           <br/>
             <button type="submit" class="btn btn-primary" style={submitStyle}>Submit</button></center>
       </form>

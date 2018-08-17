@@ -29,7 +29,7 @@ class Investigator extends Component {
                 <div class="form-row">
                     <div class="form-group col-md-6">        
                         <label for="email">Email</label>
-                        <input required class="form-control" type="text" name="email"  id="email" onChange={this.handleChange.bind(this, this.props.index)}/>
+                        <input class="form-control" type="text" name="email"  id="email" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>  
                     <div class="form-group col-md-6">        
                         <label for="institution">Institution</label>
