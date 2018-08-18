@@ -15,7 +15,8 @@ const storage = multer.diskStorage({
 //Init Upload
 const upload = multer({
     storage: storage
-})
+}).fields([{name: "uploadProposal"}, {name: "uploadBudget"}])
+
 
 const port = process.env.PORT || 8081; 
 
@@ -26,9 +27,18 @@ app.use(cors());
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 
+// app.post('/submit', upload.any(), (req, res)=>{
 
-app.post('/submit', upload.any(), (req, res)=>{
-    console.log("here is the request: ", req)
+app.post('/submit', (req, res)=>{
+   // console.log("here is the request: ", req)
+    upload(req, res, (err)=>{
+        if(err){
+            console.log('error you fool! ', err)
+        } else {
+            console.log("fields: ", req)   
+        }
+    })
+//req.files.uploadProposal[0].filename
     res.send('OK')
     // uploadProposal(req,res, (err)=>{
     //     if(err){
