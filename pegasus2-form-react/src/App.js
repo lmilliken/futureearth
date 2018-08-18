@@ -126,7 +126,7 @@ class App extends Component {
         </head>
 
         
-      <form enctype="multipart/form-data" action="http://localhost:8081/submit" method="POST">
+      <form enctype="multipart/form-data" action="https://rocky-harbor-45956.herokuapp.com/submit" method="POST">
          <div class="container form-row">
                     <div class="form-group col-md-12">        
                         <label for="proposalTitle">Full Title of Proposal:</label>
@@ -148,7 +148,7 @@ class App extends Component {
           <h4>File Uploads</h4>
           <div class="form-group">
               <label for="uploadProposal">Upload your proposal.</label>
-              <input id="uploadProposal" type="file" name="uploadProposal"/>
+              <input id="uploadProposal" type="file" name="uploadProposal" accept=".pdf"/>
           </div>
 
           <div class="form-group">

@@ -46,12 +46,43 @@ app.use(cors());
 
 app.post('/submit', (req, res)=>{
    // console.log("here is the request: ", req)
-    upload(req, res, (err)=>{
+   // res.send("ok")
+   upload(req, res, (err)=>{
         if(err){
-            console.log('error you fool! ', err)
+            return res.send('error you fool! ', err)
         } else {
             console.log("fields: ", req.body) 
+            
+            var proposalFileOrigin = req.files.uploadProposal[0].path;
+            var proposalFileDest = req.files.uploadProposal[0].filename;
+            var budgetFileOrigin = req.files.uploadBudget[0].path;
+            var budgetFileDest = req.files.uploadBudget[0].filename;
 
+            ftpClient.connect({
+                host: "ftp.laurelmilliken.com",
+                port: 21,
+                user: "pegasus2018@laurelmilliken.com",
+                password: "Back2Future18"
+            }, (err)=>{
+                console.log("setting connection to FTP")
+                console.log(err)})
+
+            ftpClient.on('ready', function() {
+                console.log("in ready")
+                ftpClient.put( proposalFileOrigin, proposalFileDest, function(err) {
+                    console.log("in put")
+                  if (err) throw err;
+                  ftpClient.put( budgetFileOrigin, budgetFileDest, function(err) {
+                    if (err) throw err;
+                    ftpClient.end();
+                    console.log("done")
+                    return res.send("OK")
+                    });
+                });
+              });   
+            
+        }
+        })
             // var proposalFileOrigin = req.files.uploadProposal[0].path;
             // var proposalFileDest = req.files.uploadProposal[0].filename;
             // var budgetFileOrigin = req.files.uploadBudget[0].path;
@@ -75,10 +106,10 @@ app.post('/submit', (req, res)=>{
             //         ftpClient.end();
             //     });
             //   });             
-        }
+        // }
     })
 //req.files.uploadProposal[0].filename
-    res.send('OK')
+   // res.send('OK')
     // uploadProposal(req,res, (err)=>{
     //     if(err){
     //         console.log('error you fool! ', err)
@@ -96,7 +127,7 @@ app.post('/submit', (req, res)=>{
     //         res.send('test')
     //     }
     // })
-});
+// });
 
 app.listen(port, ()=>{
     console.log(`Server is up on port ${port}`)
