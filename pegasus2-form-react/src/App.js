@@ -84,7 +84,7 @@ class App extends Component {
 
     this.setState(
       {investigatorCo: coInvestigators}
-      ,()=>{console.log("updateded state after remove: ", this.state)}
+      ,()=>{console.log("updated state after remove: ", this.state)}
     )
   }
 
@@ -127,7 +127,7 @@ class App extends Component {
         </head>
 
         
-      <form encType="multipart/form-data" action="https://rocky-harbor-45956.herokuapp.com/submit" method="POST">
+      <form encType="multipart/form-data" action="http://localhost:8081/submit" method="POST">
          <div class="container form-row">
                     <div class="form-group col-md-12">        
                         <label for="proposalTitle">Full Title of Proposal:</label>

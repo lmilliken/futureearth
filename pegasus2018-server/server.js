@@ -1,8 +1,10 @@
+require('dotenv').config();
 const express = require('express')
 var cors = require('cors');
 const multer = require('multer');
 const path = require('path')
 const Client = require('ftp')
+
 const fs = require('fs')
 var bodyParser  = require('body-parser');
 
@@ -45,14 +47,13 @@ app.post('/submit', (req, res)=>{
             var proposalFileDest = req.files.uploadProposal[0].filename;
             var budgetFileOrigin = req.files.uploadBudget[0].path;
             var budgetFileDest = req.files.uploadBudget[0].filename;
-
-
+            
             var ftpClient = new Client();
             ftpClient.connect({
-                host: "ftp.laurelmilliken.com",
-                port: 21,
-                user: "pegasus2018@laurelmilliken.com",
-                password: "Back2Future18"
+                host: process.env.FTP_HOST,
+                port: process.env.FTP_PORT,
+                user: process.env.FTP_USER,
+                password: process.env.FTP_PASSWORD
             }, (err)=>{
                 console.log('error connecting to ftp server: ', err)})
 
