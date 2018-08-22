@@ -18,13 +18,10 @@ var upload = (req) => {
             console.log('error connecting to ftp server: ', err)})
     
         ftpClient.on('ready', function() {
-            console.log("in ready")
             ftpClient.put( proposalFileOrigin, proposalFileDest, function(err) {
-                console.log("proposal file uploaded")
                 if (err) {reject (`Could not upload ${proposalFileOrigin} to ftp server.`)};
               ftpClient.put( budgetFileOrigin, budgetFileDest, function(err) {
                 if (err) {reject (`Could not upload ${budgetFileOrigin} to ftp server.`)}
-                console.log("budget file uploaded")
                 ftpClient.end()
                 resolve(proposalFileDest, proposalFileOrigin)
                 console.log("connection ended?")    
@@ -32,15 +29,10 @@ var upload = (req) => {
             });
           });   
     
-    
-    
         ftpClient.on('end', function(){
         console.log("connection to ftpClient definitely ended")
         })
-
-
-
-    })  
+    })  //promise
 }
 
 module.exports = {upload}
