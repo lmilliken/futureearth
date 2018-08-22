@@ -2,22 +2,24 @@ import React, { Component } from 'react';
 
 import Investigator from './components/Investigator';
 import InvestigatorCo from './components/InvestigatorCo';
+const uuidv1 = require('uuid/v1');
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       title: '',
-      investigatorLead: {
+      investigatorLead: [{
         firstName: '',
         lastName: '',
         email: '',
         institution: '',
         countryCitizenship: '',
         countryWork: ''
-      },
-      InvestigatorCo: [
+      }],
+      investigatorCo: [
         {
+          key: uuidv1(),
           firstName: '',
           lastName: '',
           email: '',
@@ -26,6 +28,7 @@ class App extends Component {
           countryWork: ''
         },
         {
+          key: uuidv1(),
           firstName: '',
           lastName: '',
           email: '',
@@ -43,8 +46,9 @@ class App extends Component {
   }
 
   handleAdd(){
-    var coInvestigators = this.state.InvestigatorCo
+    var coInvestigators = this.state.investigatorCo
         coInvestigators.push({
+            key: uuidv1(),
             firstName: '',
             lastName: '',
             email: '',
@@ -53,32 +57,34 @@ class App extends Component {
             countryWork: ''
           })
     this.setState({
-      InvestigatorCo: coInvestigators
-      })
+      investigatorCo: coInvestigators
+      }, ()=>{console.log("new state: ", this.state)})
   };
 
-  handleLeadChange(event){
-    console.log(event.target.name)
-    var prop = event.target.name
-    var value = event.target.value
-    console.log('event name', prop)
-   // this.setState({investigatorLead: {prop: value}}, console.log("lead", this.state.investigatorLead))
-
-    var newLead = {...this.state.investigatorLead, [prop]: value };
-    this.setState({investigatorLead: newLead}, ()=>{console.log(this.state.investigatorLead)})
+  handleLeadChange(_, field, value){
+    var newLead = this.state.investigatorLead.slice()
+    newLead[0][field] = value
+    this.setState({investigatorLead: newLead}, ()=>{console.log("updated state: ", this.state)})
   }
 
-  handleCoChange(event){
-   console.log("changed co investigor",   event.target.value)
+  handleCoChange(index, field, value){
+  console.log("handle co change at index: ", index)  
+  console.log("handle co change at field: ", field)  
+  console.log("handle co change at value: ", value)  
+    var tempArray = this.state.investigatorCo
+    tempArray[index][field] = value
+    this.setState({investigatorCo: tempArray}, ()=>{console.log("updated state: ", this.state)} )
   }
 
   handleRemove(index){
     console.log('index', index)
-    var coInvestigators = this.state.InvestigatorCo
+    var coInvestigators = this.state.investigatorCo.slice()
     coInvestigators.splice(index,1)
+    console.log("new co investigators: ", coInvestigators)
 
     this.setState(
-      {InvestigatorCo: coInvestigators}
+      {investigatorCo: coInvestigators}
+      ,()=>{console.log("updated state after remove: ", this.state)}
     )
   }
 
@@ -86,23 +92,42 @@ class App extends Component {
     this.setState({ title: event.target.value }, ()=>{console.log(this.state)})
   }
 
+  handleSubmit(event){
+    event.preventDefault();
+    const data = new FormData(event.target);
+    console.log("data", data)
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", 'http://localhost:8081/submit', true);
+    //xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(data);
+
+    // fetch('http://localhost:8080/submit', {
+    //   method: 'POST',
+    //   body: data,
+    // }).then((res)=>console.log('response from server: ', res));
+  }
+
   render() {
 
-    var investigator = () =>{
-      var lead = this.state.investigatorLead
-      return <Investigator firstName={lead.firstName} lastName={lead.lastName} email={lead.email} institution={lead.institution} countryCitizenship={lead.countryCitizenship} countryWork={lead.countryWork} handleChange={this.handleLeadChange} />}
+    //this is not working
+    // var investigator = () =>{
+    //   var lead = this.state.investigatorLead
+    //   return <Investigator firstName={lead.firstName} lastName={lead.lastName} email={lead.email} institution={lead.institution} countryCitizenship={lead.countryCitizenship} countryWork={lead.countryWork} handleChange={this.handleLeadChange} />}
     
-    var coInvestigators = this.state.InvestigatorCo.map(
-      (item, index)=>{return <InvestigatorCo key={index} index={index} firstName={item.firstName} lastName={item.lastName} email={item.email} institution={item.institution} countryCitizenship={item.countryCitizenship} countryWork={item.countryWork} handleChange={this.handleCoChange} remove={this.handleRemove}/>}
+    var coInvestigators = this.state.investigatorCo.map(
+      (item, index)=>{return <InvestigatorCo key={item.key} index={index} firstName={item.firstName} lastName={item.lastName} email={item.email} institution={item.institution} countryCitizenship={item.countryCitizenship} countryWork={item.countryWork} handleChange={this.handleCoChange} remove={this.handleRemove}/>}
     );
-    var lead = this.state.investigatorLead
+    var lead = this.state.investigatorLead[0]
 
     return (
       <div className="App container">
         <head>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/>
+        {/* <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"/> 
+      "https://rocky-harbor-45956.herokuapp.com/submit"  "http://localhost:8081/submit"*/}
         </head>
-      <form>
+
+        
+      <form encType="multipart/form-data" action="http://localhost:8081/submit" method="POST">
          <div class="container form-row">
                     <div class="form-group col-md-12">        
                         <label for="proposalTitle">Full Title of Proposal:</label>
@@ -124,24 +149,28 @@ class App extends Component {
           <h4>File Uploads</h4>
           <div class="form-group">
               <label for="uploadProposal">Upload your proposal.</label>
-              <input id="uploadProposal" type="file" name="uploadProposal"/>
+              <input id="uploadProposal" type="file" name="uploadProposal" accept=".pdf"/>
           </div>
 
           <div class="form-group">
                   <label for="uploadBudget">Upload your budget.</label>
-                  <input id="uploadBudget" type="file" name="uploadBudget"/>
+                  <input id="uploadBudget" type="file" name="uploadBudget" accept=".pdf"/>
           </div>
 
 
           <center>
-          <input type="checkbox" name="checkbox" value="check" id="agree" /> By submitting this form, I agree to research, innovation, sustainability, and the Oxford comma.
+          <input type="checkbox" name="checkbox" value="check" id="agree" /> By submitting this form I agree to research, innovation, sustainability, and the Oxford comma.
           <br/>
-            <button type="submit" class="btn btn-primary">Submit</button></center>
+            <button type="submit" class="btn btn-primary" style={submitStyle}>Submit</button></center>
       </form>
         
       </div>
     );
   }
 }
+
+const submitStyle = {
+  margin: '15px'
+};
 
 export default App;
