@@ -6,8 +6,7 @@ const path = require('path')
 
 var MongoClient = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
-const ftpUpload = require('./utils/ftp-upload')
-const fs = require('fs')
+
 
 const ftpClient = require('./utils/ftp-client')
 
@@ -17,9 +16,14 @@ app.use(cors());
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({ extended: true }));
 
+app.listen(port, ()=>{
+    console.log(`Server is up on port ${port}`)
+});
 
-//Public Folder
+//Public Folder, not sure what this is for, but it's needed
 app.use(express.static('./public'))
+
+
 
 //Set Storage Enginee
 const storage = multer.diskStorage({
@@ -51,8 +55,8 @@ app.post('/submit', (req, res)=>{
             return res.send('error you fool! ', err)
         } else {
             console.log("fields: ", req.body) 
-            ftpClient.upload(req)
-            res.send("ok");
+            ftpClient.upload(req).then(()=>
+                {res.send('ftp promise resolved')});
         }
     })        
 //             // ftpUpload(req, res);
@@ -117,7 +121,3 @@ app.post('/submit', (req, res)=>{
 //         })
 })
 
-app.listen(port, ()=>{
-    console.log(`Server is up on port ${port}`)
-    // console.log(process.env)
-});
