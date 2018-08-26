@@ -34,7 +34,7 @@ var saveToDB = (req) =>{
 
             
             db.collection(dbCollection).insert(objectToSave).then(function(returned){
-                    console.log(returned);  
+                    // console.log(returned);  
                     resolve({returned})
                     //send them an email confirmation
                     })

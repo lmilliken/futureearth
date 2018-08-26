@@ -18,6 +18,7 @@ var upload = (req) => {
             console.log('error connecting to ftp server: ', err)})
     
         ftpClient.on('ready', function() {
+            console.log("in ready origin: ", proposalFileOrigin)
             ftpClient.put( proposalFileOrigin, proposalFileDest, function(err) {
                 if (err) {reject (`Could not upload ${proposalFileOrigin} to ftp server.`)};
               ftpClient.put( budgetFileOrigin, budgetFileDest, function(err) {
