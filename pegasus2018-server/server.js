@@ -40,7 +40,7 @@ app.post('/submit', (req, res)=>{
                 console.log('ftp promise resolved', ftpresult)
                 mongoClient.saveToDB(req)
                 .then((result)=>{
-                    emailClient.sendEmail(result.returned.ops)
+                    emailClient.sendEmail(result.returned.ops[0])
                     res.send("ok"),
                     console.log('result of MongoClient', result)
                 })               
