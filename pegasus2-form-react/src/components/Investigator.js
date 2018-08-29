@@ -15,34 +15,34 @@ class Investigator extends Component {
   
   render() {
     return (
-        <div class="container applicant">
-                <div class="form-row">
-                    <div class="form-group col-md-6">        
-                        <label for="firstName">First Name</label>
-                        <input class="form-control" type="text" name="firstName" id="firstName" ref="firstName" onChange={this.handleChange.bind(this, this.props.index)}/>
+        <div className="container applicant">
+                <div className="form-row">
+                    <div className="form-group col-md-6">        
+                        <label htmlFor="firstName">First Name</label>
+                        <input className="form-control" type="text" name="firstName" id="firstName" ref="firstName" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>  
-                    <div class="form-group col-md-6">        
-                        <label for="lastName">Last Name</label>
-                        <input class="form-control" type="text" name="lastName"  id="lastName" onChange={this.handleChange.bind(this, this.props.index)}/>
+                    <div className="form-group col-md-6">        
+                        <label htmlFor="lastName">Last Name</label>
+                        <input className="form-control" type="text" name="lastName"  id="lastName" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>  
                 </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">        
-                        <label for="email">Email</label>
-                        <input class="form-control" type="text" name="email"  id="email" onChange={this.handleChange.bind(this, this.props.index)}/>
+                <div className="form-row">
+                    <div className="form-group col-md-6">        
+                        <label htmlFor="email">Email</label>
+                        <input className="form-control" type="text" name="email"  id="email" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>  
-                    <div class="form-group col-md-6">        
-                        <label for="institution">Institution</label>
-                        <input class="form-control" type="text" name="institution" id="institution" onChange={this.handleChange.bind(this, this.props.index)}/>
+                    <div className="form-group col-md-6">        
+                        <label htmlFor="institution">Institution</label>
+                        <input className="form-control" type="text" name="institution" id="institution" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>
                 </div>
-                <div class="form-row">    
-                    <div class="form-group col-md-6">
-                        <label for="countryCitizenship" onChange={this.props.handleChange}>Country of Citizenship</label>
+                <div className="form-row">    
+                    <div className="form-group col-md-6">
+                        <label htmlFor="countryCitizenship" onChange={this.props.handleChange}>Country of Citizenship</label>
                         <SelectCountry name="countryCitizenship" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>
-                    <div class="form-group col-md-6">
-                        <label for="countryWork">Country of Work</label>
+                    <div className="form-group col-md-6">
+                        <label htmlFor="countryWork">Country of Work</label>
                         <SelectCountry name="countryWork" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>
                 </div>
