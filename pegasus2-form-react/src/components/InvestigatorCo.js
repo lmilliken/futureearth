@@ -11,9 +11,9 @@ removeCo(index){
 
   render() {
     return (
-        <div class="container applicant-co border border-light" style={divStyle}>
+        <div className="container applicant-co border border-light" style={divStyle}>
                 <Investigator key={this.props.key} index={this.props.index} infirstName={this.props.firstName} lastName={this.props.lastName} email={this.props.email} institution={this.props.institution} countryCitizenship={this.props.countryCitizenship} countryWork={this.props.countryWork} handleChange={this.props.handleChange}/>
-                <center><button type="button" onClick={this.removeCo.bind(this, this.props.index)} class="btn btn-outline-danger">Remove</button></center>
+                <center><button type="button" onClick={this.removeCo.bind(this, this.props.index)} className="btn btn-outline-danger">Remove</button></center>
             </div>
     );
   }
