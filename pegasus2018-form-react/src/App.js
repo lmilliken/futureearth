@@ -85,7 +85,7 @@ class App extends Component {
     console.log("submit!")
     const data = new FormData(event.target);
     console.log(data)
-    fetch('http://localhost:8081/submit', {
+    fetch('https://rocky-harbor-45956.herokuapp.com/submit', {
       method: 'POST',
       body: data,
     }).then((response)=>{console.log(response)});
