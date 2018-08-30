@@ -19,7 +19,7 @@ class Investigator extends Component {
                 <div className="form-row">
                     <div className="form-group col-md-6">        
                         <label htmlFor="firstName">First Name</label>
-                        <input className="form-control" type="text" name="firstName" id="firstName" ref="firstName" onChange={this.handleChange.bind(this, this.props.index)}/>
+                        <input className="form-control" type="text" name="firstName" id="firstName" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>  
                     <div className="form-group col-md-6">        
                         <label htmlFor="lastName">Last Name</label>
@@ -38,7 +38,7 @@ class Investigator extends Component {
                 </div>
                 <div className="form-row">    
                     <div className="form-group col-md-6">
-                        <label htmlFor="countryCitizenship" onChange={this.props.handleChange}>Country of Citizenship</label>
+                        <label htmlFor="countryCitizenship">Country of Citizenship</label>
                         <SelectCountry name="countryCitizenship" onChange={this.handleChange.bind(this, this.props.index)}/>
                     </div>
                     <div className="form-group col-md-6">

@@ -56,7 +56,7 @@ var sendEmail = (requestObject) => {
 
     var message = {
         from: process.env.EMAIL_USER,
-        to: 'millifly@gmail.com',
+        to: requestObject.investigators[0].email,
         subject: 'PEGASuS Application Received',
         // text: 'this is some text',
         html: '<p>Hello,</p>' +

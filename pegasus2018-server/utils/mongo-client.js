@@ -2,13 +2,13 @@ var MongoClient = require('mongodb');
 var ObjectId = require('mongodb').ObjectID;
 
 let parentFtpDirectory = 'http://apply.futureearth.org/pegasus2018/'
-let dbCollection = 'pegasus2018'
+let dbCollection = 'pegasus2018-playground'
 
 var saveToDB = (req) =>{
     let objectToSave = {
         title: req.body.title,
         investigators: [],
-        proposalName: req.files.uploadBudget[0].originalname,
+        proposalName: req.files.uploadProposal[0].originalname,
         budgetName: req.files.uploadBudget[0].originalname,
         linkToProposal: parentFtpDirectory + req.files.uploadProposal[0].filename ,
         linkToBudget: parentFtpDirectory + req.files.uploadBudget[0].filename,
