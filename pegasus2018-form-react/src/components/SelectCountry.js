@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 class SelectCountry extends Component {
   render() {
     return (
-        <select className="form-control" defaultValue="" name={this.props.name} onChange={this.props.onChange}>
+        <select className="form-control" required name={this.props.name} onChange={this.props.onChange}>
             <option value=""></option>
             <option value="Afghanistan">Afghanistan</option>
             <option value="Albania">Albania</option>
