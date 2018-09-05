@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //statuses: new, done
+      //statuses: new, done, invalidFile, pending
       submitStatus: "new",
       investigatorCo: [
         {
@@ -96,14 +96,18 @@ class App extends Component {
     console.log("submit!");
     const data = new FormData(event.target);
     console.log(data);
-    fetch("https://pegasus2018-server.herokuapp.com/submit", {
+    fetch("http://localhost:8081/submit", {
       method: "POST",
       body: data
-    }).then(response => {
-      console.log(response);
-      this.setState({ submitStatus: "completed" });
-      console.log("status: ", this.state.submitStatus);
-    });
+    })
+      .then(response => {
+        console.log(response);
+        this.setState({ submitStatus: "completed" });
+        console.log("status: ", this.state.submitStatus);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   } //handleSubmit
 
   render() {
@@ -189,16 +193,19 @@ class App extends Component {
                 type="file"
                 name="uploadProposal"
                 accept="application/pdf"
+                required
               />
             </div>
 
             <div className="form-group">
               <label htmlFor="uploadBudget">Upload your budget.</label>
               <input
+                style={invalidFile}
                 id="uploadBudget"
                 type="file"
                 name="uploadBudget"
                 accept="application/pdf"
+                required
               />
             </div>
 
@@ -243,6 +250,10 @@ class App extends Component {
     }
   } //render
 } //app
+
+const invalidFile = {
+  border: "2px dashed red"
+};
 
 const submitStyle = {
   margin: "15px"
