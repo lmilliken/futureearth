@@ -17,6 +17,7 @@ var saveToDB = req => {
 
   //maybe clean up
   if (req.body.firstName.isArray) {
+    //map instead
     for (i = 0; i < req.body.firstName.length; i++) {
       objectToSave.investigators.push({
         firstName: req.body.firstName[i],

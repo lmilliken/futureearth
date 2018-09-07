@@ -8,8 +8,9 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      //statuses: new, done, invalidFile, pending
+      //statuses: new, completed, error, invalidFile, pending
       submitStatus: "new",
+      submitEndMessage: "",
       investigatorCo: [
         {
           key: uuidv1(),
@@ -95,6 +96,7 @@ class App extends Component {
     event.preventDefault();
     console.log("submit!");
     const data = new FormData(event.target);
+    ///check if investigators is array or a single person
     console.log(data);
     fetch("http://localhost:8081/submit", {
       method: "POST",
@@ -102,8 +104,18 @@ class App extends Component {
     })
       .then(response => {
         console.log(response);
-        this.setState({ submitStatus: "completed" });
-        console.log("status: ", this.state.submitStatus);
+        if (response.status === 200) {
+          this.setState({ submitStatus: "completed" });
+        } else if (response.status === 400) {
+          this.setState({
+            submitStatus: "error",
+            submitEndMessage:
+              response.statusText +
+              " Please contact Laurel Milliken at laurel.milliken@futureearth.org"
+          });
+        }
+
+        console.log("status: ", this.state.submitEndMessage);
       })
       .catch(err => {
         console.log(err);
@@ -119,7 +131,9 @@ class App extends Component {
       );
     } else if (
       this.state.submitStatus === "new" ||
-      this.state.submitStatus === "pending"
+      this.state.submitStatus === "pending" ||
+      this.state.submitStatus === "invalidFile" ||
+      this.state.submitStatus === "error"
     ) {
       var coInvestigators = this.state.investigatorCo.map((item, index) => {
         return (
@@ -214,6 +228,18 @@ class App extends Component {
               By submitting this form I agree to research, innovation,
               sustainability, and the Oxford comma.
               <br />
+              {this.state.submitStatus === "error" && (
+                <p
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: "16px",
+                    marginBottom: "0px"
+                  }}
+                >
+                  {this.state.submitEndMessage}
+                </p>
+              )}
               {this.state.submitStatus === "pending" && (
                 <div
                   className="progress"

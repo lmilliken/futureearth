@@ -2,6 +2,7 @@ const multer = require("multer");
 const path = require("path");
 
 var uploadLocal = (req, res) => {
+  console.log("body", req.body);
   return new Promise((resolve, reject) => {
     //Set Storage Enginee
     const storage = multer.diskStorage({
@@ -27,6 +28,10 @@ var uploadLocal = (req, res) => {
       if (err) {
         reject("Multer error uploading to local storage: ", err);
       } else {
+        console.log("files in Multer", req.files);
+        // if(req.files.uploadProposal.mimetype != "application/pdg"){
+        //     reject()
+        // }
         resolve(req.body);
       }
     });
