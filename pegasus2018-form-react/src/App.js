@@ -113,6 +113,11 @@ class App extends Component {
               response.statusText +
               " Please contact Laurel Milliken at laurel.milliken@futureearth.org"
           });
+        } else if (response.status === 401) {
+          this.setState({
+            submitStatus: "invalidFile",
+            submitEndMessage: response.statusText
+          });
         }
 
         console.log("status: ", this.state.submitEndMessage);
@@ -229,6 +234,18 @@ class App extends Component {
               sustainability, and the Oxford comma.
               <br />
               {this.state.submitStatus === "error" && (
+                <p
+                  style={{
+                    color: "red",
+                    fontWeight: "bold",
+                    marginTop: "16px",
+                    marginBottom: "0px"
+                  }}
+                >
+                  {this.state.submitEndMessage}
+                </p>
+              )}
+              {this.state.submitStatus === "invalidFile" && (
                 <p
                   style={{
                     color: "red",

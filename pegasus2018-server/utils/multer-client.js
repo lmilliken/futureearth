@@ -8,9 +8,14 @@ var uploadLocal = (req, res) => {
     const storage = multer.diskStorage({
       destination: "./public/uploads",
       filename: function(req, file, cb) {
+        let lastName = "";
+        req.body.lastName.isArray
+          ? (lastName = req.body.lastName[0])
+          : (lastName = req.body.lastName);
+
         cb(
           null,
-          req.body.lastName[0] +
+          lastName +
             "_" +
             file.fieldname.substring(6) +
             "-" +
@@ -29,10 +34,13 @@ var uploadLocal = (req, res) => {
         reject("Multer error uploading to local storage: ", err);
       } else {
         console.log("files in Multer", req.files);
-        // if(req.files.uploadProposal.mimetype != "application/pdg"){
-        //     reject()
-        // }
-        resolve(req.body);
+        if (
+          req.files.uploadProposal[0].mimetype != "application/pdf" ||
+          req.files.uploadBudget[0].mimetype != "application/pdf"
+        ) {
+          resolve("Invalid File");
+        }
+        resolve();
       }
     });
   });
