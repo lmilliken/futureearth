@@ -8,6 +8,7 @@ var uploadLocal = (req, res) => {
     const storage = multer.diskStorage({
       destination: "./public/uploads",
       filename: function(req, file, cb) {
+        //figure out if there's more than one investigator, if there is take the 1st of the array as the last name
         let lastName = "";
         req.body.lastName.isArray
           ? (lastName = req.body.lastName[0])

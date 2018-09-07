@@ -17,7 +17,7 @@ var saveToDB = req => {
 
   //maybe clean up
   if (req.body.firstName.isArray) {
-    //map instead
+    //map instead? not really since
     for (i = 0; i < req.body.firstName.length; i++) {
       objectToSave.investigators.push({
         firstName: req.body.firstName[i],
@@ -41,7 +41,7 @@ var saveToDB = req => {
 
   return new Promise((resolve, reject) => {
     MongoClient.connect(
-      process.env.DB,
+      "mongodb://admin:S1Francis@ds143039.mlab.com:43039/fcc-lxm",
       function(err, client) {
         if (err) {
           reject("Could not connect to MongoDB: ", err);
@@ -49,7 +49,7 @@ var saveToDB = req => {
           console.log("successfully connected");
           var db = client.db("fcc-lxm");
           db.collection(dbCollection)
-            .insert(objectToSave)
+            .insertOne(objectToSave)
             .then(function(returned) {
               // console.log(returned);
               resolve({ returned });

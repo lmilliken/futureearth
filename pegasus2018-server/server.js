@@ -25,38 +25,39 @@ app.post("/submit", (req, res) => {
     .then(returned => {
       if (returned == "Invalid File") {
         res.statusMessage =
-          "You have uploaded an invalid file type.  Please be sure to upload a .pdf document.";
+          "The file(s) you submitted are invalid.  Please only upload only .pdf documents.";
         res.status(401).end();
-      }
-      ftpClient
-        .upload(req)
-        .then(ftpresult => {
-          mongoClient
-            .saveToDB(req)
-            .then(result => {
-              emailClient
-                .sendEmail(result.returned.ops[0])
-                .then(res.send("ok"))
-                .catch(err => {
-                  res.statusMessage =
-                    "Sorry, an error was encountered while saving your application (Email Client): " +
-                    err;
-                  res.status(400).end();
-                });
-            })
-            .catch(err => {
-              res.statusMessage =
-                "Sorry, an error was encountered while saving your application (Mongo): " +
-                err;
-              res.status(400).end();
-            });
-        })
-        .catch(err => {
-          res.statusMessage =
-            "Sorry, an error was encountered while uploading your files (FTP): " +
-            err;
-          res.status(400).end();
-        });
+      } else {
+        ftpClient
+          .upload(req)
+          .then(() => {
+            mongoClient
+              .saveToDB(req)
+              .then(result => {
+                emailClient
+                  .sendEmail(result.returned.ops[0])
+                  .then(res.send("ok"))
+                  .catch(err => {
+                    res.statusMessage =
+                      "Sorry, an error was encountered while saving your application (Email Client): " +
+                      err;
+                    res.status(400).end();
+                  });
+              })
+              .catch(err => {
+                res.statusMessage =
+                  "Sorry, an error was encountered while saving your application (Mongo): " +
+                  err;
+                res.status(400).end();
+              });
+          })
+          .catch(err => {
+            res.statusMessage =
+              "Sorry, an error was encountered while uploading your files (FTP): " +
+              err;
+            res.status(400).end();
+          });
+      } //else
     })
     .catch(err => {
       res.statusMessage =

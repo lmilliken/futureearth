@@ -168,6 +168,7 @@ class App extends Component {
               <div className="form-group col-md-12">
                 <label htmlFor="proposalTitle">Full Title of Proposal:</label>
                 <input
+                  required
                   className="form-control"
                   type="text"
                   name="title"
@@ -208,6 +209,11 @@ class App extends Component {
             <div className="form-group">
               <label htmlFor="uploadProposal">Upload your proposal.</label>
               <input
+                style={
+                  this.state.submitStatus === "invalidFile"
+                    ? { border: "2px dashed red" }
+                    : {}
+                }
                 id="uploadProposal"
                 type="file"
                 name="uploadProposal"
@@ -219,7 +225,11 @@ class App extends Component {
             <div className="form-group">
               <label htmlFor="uploadBudget">Upload your budget.</label>
               <input
-                style={invalidFile}
+                style={
+                  this.state.submitStatus === "invalidFile"
+                    ? { border: "2px dashed red" }
+                    : {}
+                }
                 id="uploadBudget"
                 type="file"
                 name="uploadBudget"
@@ -234,28 +244,10 @@ class App extends Component {
               sustainability, and the Oxford comma.
               <br />
               {this.state.submitStatus === "error" && (
-                <p
-                  style={{
-                    color: "red",
-                    fontWeight: "bold",
-                    marginTop: "16px",
-                    marginBottom: "0px"
-                  }}
-                >
-                  {this.state.submitEndMessage}
-                </p>
+                <p style={errorStyle}>{this.state.submitEndMessage}</p>
               )}
               {this.state.submitStatus === "invalidFile" && (
-                <p
-                  style={{
-                    color: "red",
-                    fontWeight: "bold",
-                    marginTop: "16px",
-                    marginBottom: "0px"
-                  }}
-                >
-                  {this.state.submitEndMessage}
-                </p>
+                <p style={errorStyle}>{this.state.submitEndMessage}</p>
               )}
               {this.state.submitStatus === "pending" && (
                 <div
@@ -296,6 +288,13 @@ class App extends Component {
 
 const invalidFile = {
   border: "2px dashed red"
+};
+
+const errorStyle = {
+  color: "red",
+  fontWeight: "bold",
+  marginTop: "16px",
+  marginBottom: "0px"
 };
 
 const submitStyle = {
