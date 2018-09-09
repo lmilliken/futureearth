@@ -18,6 +18,14 @@ app.listen(port, () => {
 
 app.use(express.static("./public"));
 
+app.get("/proposals", (req, res) => {
+  console.log("/proposals called");
+  mongoClient.getProposals(returnedStuff => {
+    console.log("returned stuff", returnedStuff);
+    res.send(returnedStuff);
+  });
+});
+
 // it's a little messy, can't do Promise.all because the next function needs output from previous function, can do async/await but need to work on try/catch blocks for them
 app.post("/submit", (req, res) => {
   multerClient

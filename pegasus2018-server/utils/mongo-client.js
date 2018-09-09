@@ -41,7 +41,7 @@ var saveToDB = req => {
 
   return new Promise((resolve, reject) => {
     MongoClient.connect(
-      "mongodb://admin:S1Francis@ds143039.mlab.com:43039/fcc-lxm",
+      process.env.DB,
       function(err, client) {
         if (err) {
           reject("Could not connect to MongoDB: ", err);
@@ -61,4 +61,26 @@ var saveToDB = req => {
   });
 };
 
-module.exports = { saveToDB };
+var getProposals = req => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-playground")
+            .find()
+            .toArray()
+            .then(returnedStuff => {
+              // console.log("returned", returnedStuff);
+              resolve({ returnedStuff });
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
+
+module.exports = { saveToDB, getProposals };
