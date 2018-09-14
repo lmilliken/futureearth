@@ -18,14 +18,6 @@ app.listen(port, () => {
 
 app.use(express.static("./public"));
 
-app.get("/proposals", (req, res) => {
-  console.log("/proposals called");
-  mongoClient.getProposals().then(returnedStuff => {
-    console.log("returned stuff", returnedStuff);
-    res.send(returnedStuff);
-  });
-});
-
 // it's a little messy, can't do Promise.all because the next function needs output from previous function, can do async/await but need to work on try/catch blocks for them
 app.post("/submit", (req, res) => {
   multerClient
@@ -73,23 +65,11 @@ app.post("/submit", (req, res) => {
         err;
       res.status(400).end();
     });
+});
 
-  //   multerClient
-  //     .uploadLocal(req, res)
-  //     .then(() => {
-  //       console.log("files", req.files);
-  //       console.log("body", req.body);
-  //       console.log("about to get file from local to ftp");
-  //       ftpClient.upload(req).then(ftpresult => {
-  //         console.log("ftp promise resolved", ftpresult);
-  //         mongoClient.saveToDB(req).then(result => {
-  //           emailClient.sendEmail(result.returned.ops[0]);
-  //           res.send("ok"), console.log("result of MongoClient", result);
-  //         });
-  //       });
-  //     })
-  //     .catch(error => {
-  //       console.log(err);
-  //       return res.send("something when wrong", err);
-  //     });
+app.get("/proposals", (req, res) => {
+  console.log("/proposals called");
+  mongoClient.getProposals().then(proposals => {
+    res.send(proposals);
+  });
 });

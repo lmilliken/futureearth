@@ -1,72 +1,68 @@
 import React, { Component } from "react";
-import logo from "./logo.svg";
 import "./App.css";
+import axios from "axios";
+import ProposalRow from "./components/ProposalRow";
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       submitStatus: "new",
-      data: {}
+      proposals: [],
+      selected: null,
+      displayModal: false
     };
 
     this.getProposals = this.getProposals.bind(this);
+    this.handleRowClick = this.handleRowClick.bind(this);
   }
 
   async componentWillMount() {
     console.log("component is about to mount!");
     const data = await this.getProposals();
-    console.log("data", data);
-    this.setState({ data: data });
+    this.setState({ proposals: data.data.returnedStuff });
     console.log("state", this.state);
   }
 
   async getProposals() {
-    const data = await fetch("http://localhost:8081/proposals", {
-      method: "GET"
-    })
-      .then(response => {
-        response.json().then(data => {
-          console.log("datat", data);
-          return data;
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    return axios
+      .get("http://localhost:8081/proposals")
+      .then(res => res)
+      .catch(err => console.log(err));
+  }
 
-    return data;
+  handleRowClick() {
+    // this.setState({
+    //   selected: this.state.data.id,
+    //   displayModal: true
+    // });
+    console.log("row clicked");
   }
 
   render() {
-    const tableBody = (
-      <tr>
-        <td>Alvin</td>
-        <td>Eclair</td>
-        <td>$0.87</td>
-        <td>Somewhere</td>
-      </tr>
-    );
+    let proposals = this.state.proposals.map(aProposal => {
+      return <ProposalRow key={aProposal._id} props={aProposal} />;
+    });
+
+    console.log("proposals inside of render", this.state.proposals);
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
+          <h1 className="App-title">Proposal Administration Portal</h1>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <table className="highlight">
+        <p>Hi Craig</p>
+        <table className="table table-hover">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Name</th>
-              <th>Country Work</th>
-              <th>Country Citizenship</th>
+              <th className="text-left">Title</th>
+              <th className="text-left">Name</th>
+              <th className="text-left">Country Work</th>
+              <th className="text-left">Country Citizenship</th>
+              <th className="text-left">Tags</th>
+              <th className="text-left">Notes</th>
             </tr>
           </thead>
-
-          <tbody>{tableBody}</tbody>
+          <tbody>{proposals}</tbody>
         </table>
       </div>
     );
