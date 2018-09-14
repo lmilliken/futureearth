@@ -20,7 +20,7 @@ app.use(express.static("./public"));
 
 app.get("/proposals", (req, res) => {
   console.log("/proposals called");
-  mongoClient.getProposals(returnedStuff => {
+  mongoClient.getProposals().then(returnedStuff => {
     console.log("returned stuff", returnedStuff);
     res.send(returnedStuff);
   });
