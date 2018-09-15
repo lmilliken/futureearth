@@ -3,6 +3,9 @@ import "./App.css";
 import axios from "axios";
 import ProposalRow from "./components/ProposalRow";
 
+import { Modal } from "react-bootstrap";
+import { Button } from "react-bootstrap";
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -18,10 +21,8 @@ class App extends Component {
   }
 
   async componentWillMount() {
-    console.log("component is about to mount!");
     const data = await this.getProposals();
     this.setState({ proposals: data.data.returnedStuff });
-    console.log("state", this.state);
   }
 
   async getProposals() {
@@ -32,19 +33,23 @@ class App extends Component {
   }
 
   handleRowClick() {
-    // this.setState({
-    //   selected: this.state.data.id,
-    //   displayModal: true
-    // });
-    console.log("row clicked");
+    this.setState({
+      displayModal: true
+    });
+    console.log("row clicked App.js");
+    console.log("state after click", this.state);
   }
 
   render() {
     let proposals = this.state.proposals.map(aProposal => {
-      return <ProposalRow key={aProposal._id} props={aProposal} />;
+      return (
+        <ProposalRow
+          key={aProposal._id}
+          props={aProposal}
+          ahandleRowClick={this.handleRowClick}
+        />
+      );
     });
-
-    console.log("proposals inside of render", this.state.proposals);
     return (
       <div className="App">
         <header className="App-header">
@@ -64,6 +69,21 @@ class App extends Component {
           </thead>
           <tbody>{proposals}</tbody>
         </table>
+
+        {this.state.displayModal === "true" && (
+          <Modal.Dialog>
+            <Modal.Header>
+              <Modal.Title>Modal title</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>One fine body...</Modal.Body>
+
+            <Modal.Footer>
+              <Button>Close</Button>
+              <Button bsStyle="primary">Save changes</Button>
+            </Modal.Footer>
+          </Modal.Dialog>
+        )}
       </div>
     );
   }

@@ -68,7 +68,6 @@ app.post("/submit", (req, res) => {
 });
 
 app.get("/proposals", (req, res) => {
-  console.log("/proposals called");
   mongoClient.getProposals().then(proposals => {
     res.send(proposals);
   });

@@ -7,11 +7,7 @@ class ProposalRow extends Component {
   }
 
   handleRowClick() {
-    // this.setState({
-    //   selected: this.state.data.id,
-    //   displayModal: true
-    // });
-    console.log("row clicked");
+    this.props.ahandleRowClick();
   }
 
   render() {
