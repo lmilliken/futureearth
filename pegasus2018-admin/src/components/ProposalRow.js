@@ -7,22 +7,21 @@ class ProposalRow extends Component {
   }
 
   handleRowClick() {
+    console.log("id", this);
     this.props.ahandleRowClick();
   }
 
   render() {
     return (
       <tr onClick={this.handleRowClick}>
-        <td className="text-left">{this.props.props.title}</td>
+        <td className="text-left">{this.props.title}</td>
         <td className="text-left">
-          {this.props.props.investigators[0].lastName},{" "}
-          {this.props.props.investigators[0].firstName}
+          {this.props.investigators[0].lastName},{" "}
+          {this.props.investigators[0].firstName}
         </td>
+        <td className="text-left">{this.props.investigators[0].countryWork}</td>
         <td className="text-left">
-          {this.props.props.investigators[0].countryWork}
-        </td>
-        <td className="text-left">
-          {this.props.props.investigators[0].countryCitizenship}
+          {this.props.investigators[0].countryCitizenship}
         </td>
         <td className="text-left"> </td>
         <td />

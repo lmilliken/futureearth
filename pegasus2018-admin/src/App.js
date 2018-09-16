@@ -15,9 +15,10 @@ class App extends Component {
       selected: null,
       displayModal: false
     };
-
     this.getProposals = this.getProposals.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
   async componentWillMount() {
@@ -33,19 +34,26 @@ class App extends Component {
   }
 
   handleRowClick() {
-    this.setState({
-      displayModal: true
+    console.log("proposal", this);
+    this.setState({ displayModal: true }, () => {
+      console.log("state after click", this.state);
     });
-    console.log("row clicked App.js");
-    console.log("state after click", this.state);
+  }
+
+  handleClose() {
+    this.setState({ displayModal: false }, () => {});
+  }
+
+  handleSave() {
+    this.setState({ displayModal: false }, () => {});
   }
 
   render() {
     let proposals = this.state.proposals.map(aProposal => {
       return (
         <ProposalRow
+          {...aProposal}
           key={aProposal._id}
-          props={aProposal}
           ahandleRowClick={this.handleRowClick}
         />
       );
@@ -70,8 +78,8 @@ class App extends Component {
           <tbody>{proposals}</tbody>
         </table>
 
-        {this.state.displayModal === "true" && (
-          <Modal.Dialog>
+        {this.state.displayModal === true && (
+          <Modal.Dialog bsSize="large">
             <Modal.Header>
               <Modal.Title>Modal title</Modal.Title>
             </Modal.Header>
@@ -79,8 +87,10 @@ class App extends Component {
             <Modal.Body>One fine body...</Modal.Body>
 
             <Modal.Footer>
-              <Button>Close</Button>
-              <Button bsStyle="primary">Save changes</Button>
+              <Button onClick={this.handleClose}>Close</Button>
+              <Button onClick={this.handleSave} bsStyle="primary">
+                Save
+              </Button>
             </Modal.Footer>
           </Modal.Dialog>
         )}
