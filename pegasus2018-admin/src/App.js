@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import axios from "axios";
 import ProposalRow from "./components/ProposalRow";
-
+import ProposalModal from "./components/ProposalModal";
 import { Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 
@@ -12,7 +12,7 @@ class App extends Component {
     this.state = {
       submitStatus: "new",
       proposals: [],
-      selected: null,
+      selected: {},
       displayModal: false
     };
     this.getProposals = this.getProposals.bind(this);
@@ -33,11 +33,21 @@ class App extends Component {
       .catch(err => console.log(err));
   }
 
-  handleRowClick() {
+  handleRowClick(id) {
     console.log("proposal", this);
-    this.setState({ displayModal: true }, () => {
-      console.log("state after click", this.state);
-    });
+    let selectedProposal = this.state.proposals.filter(
+      proposal => proposal._id === id
+    );
+
+    this.setState(
+      {
+        displayModal: true,
+        selected: selectedProposal[0]
+      },
+      () => {
+        console.log("new state", this.state);
+      }
+    );
   }
 
   handleClose() {
@@ -54,7 +64,7 @@ class App extends Component {
         <ProposalRow
           {...aProposal}
           key={aProposal._id}
-          ahandleRowClick={this.handleRowClick}
+          ahandleRowClick={() => this.handleRowClick(aProposal._id)}
         />
       );
     });
@@ -79,20 +89,11 @@ class App extends Component {
         </table>
 
         {this.state.displayModal === true && (
-          <Modal.Dialog bsSize="large">
-            <Modal.Header>
-              <Modal.Title>Modal title</Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body>One fine body...</Modal.Body>
-
-            <Modal.Footer>
-              <Button onClick={this.handleClose}>Close</Button>
-              <Button onClick={this.handleSave} bsStyle="primary">
-                Save
-              </Button>
-            </Modal.Footer>
-          </Modal.Dialog>
+          <ProposalModal
+            {...this.state.selected}
+            handleModalClose={this.handleClose}
+            handleModalSave={this.handleSave}
+          />
         )}
       </div>
     );
