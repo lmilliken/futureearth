@@ -83,4 +83,26 @@ var getProposals = req => {
   });
 };
 
-module.exports = { saveToDB, getProposals };
+var getReviewers = req => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-reviewers")
+            .find()
+            .toArray()
+            .then(returnedStuff => {
+              console.log("returned reviewers", returnedStuff);
+              resolve({ returnedStuff });
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
+
+module.exports = { saveToDB, getProposals, getReviewers };

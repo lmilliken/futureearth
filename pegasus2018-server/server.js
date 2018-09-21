@@ -72,3 +72,9 @@ app.get("/proposals", (req, res) => {
     res.send(proposals);
   });
 });
+
+app.get("/reviewers", (req, res) => {
+  mongoClient.getReviewers().then(reviewers => {
+    res.send(reviewers);
+  });
+});
