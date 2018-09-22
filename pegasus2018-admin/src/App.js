@@ -3,8 +3,6 @@ import "./App.css";
 import axios from "axios";
 import ProposalRow from "./components/ProposalRow";
 import ProposalModal from "./components/ProposalModal";
-import { Modal } from "react-bootstrap";
-import { Button } from "react-bootstrap";
 
 class App extends Component {
   constructor(props) {
@@ -12,10 +10,12 @@ class App extends Component {
     this.state = {
       submitStatus: "new",
       proposals: [],
+      reviewers: [],
       selected: {},
       displayModal: false
     };
     this.getProposals = this.getProposals.bind(this);
+    this.getReviewers = this.getReviewers.bind(this);
     this.handleRowClick = this.handleRowClick.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleClose = this.handleClose.bind(this);
@@ -24,11 +24,21 @@ class App extends Component {
   async componentWillMount() {
     const data = await this.getProposals();
     this.setState({ proposals: data.data.returnedStuff });
+    const reviewers = await this.getReviewers();
+    console.log("reviwers:", reviewers);
+    this.setState({ reviewers: reviewers.data.returnedStuff });
   }
 
   async getProposals() {
     return axios
       .get("http://localhost:8081/proposals")
+      .then(res => res)
+      .catch(err => console.log(err));
+  }
+
+  async getReviewers() {
+    return axios
+      .get("http://localhost:8081/reviewers")
       .then(res => res)
       .catch(err => console.log(err));
   }
@@ -91,6 +101,7 @@ class App extends Component {
         {this.state.displayModal === true && (
           <ProposalModal
             {...this.state.selected}
+            reviewers={this.state.reviewers}
             handleModalClose={this.handleClose}
             handleModalSave={this.handleSave}
           />

@@ -13,7 +13,7 @@ class App extends Component {
 
   async componentWillMount() {
     const data = await this.checkAuthUser();
-    console.log(data.data);
+    console.log("reviewers: ", data.data);
     console.log("cookie", document.cookie);
   }
 
