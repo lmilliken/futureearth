@@ -10,7 +10,7 @@ class App extends Component {
     this.state = {
       submitStatus: "new",
       proposals: [],
-      reviewers: [],
+      reviewersAll: [],
       selected: {},
       displayModal: false
     };
@@ -25,8 +25,8 @@ class App extends Component {
     const data = await this.getProposals();
     this.setState({ proposals: data.data.returnedStuff });
     const reviewers = await this.getReviewers();
-    console.log("reviwers:", reviewers);
-    this.setState({ reviewers: reviewers.data.returnedStuff });
+    this.setState({ reviewersAll: reviewers.data.returnedStuff });
+    console.log("reviwers:", this.state.reviewersAll);
   }
 
   async getProposals() {
@@ -101,7 +101,8 @@ class App extends Component {
         {this.state.displayModal === true && (
           <ProposalModal
             {...this.state.selected}
-            reviewers={this.state.reviewers}
+            key={this.state.selected._id}
+            reviewersAll={this.state.reviewersAll}
             handleModalClose={this.handleClose}
             handleModalSave={this.handleSave}
           />

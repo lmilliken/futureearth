@@ -5,9 +5,54 @@ import { Button } from "react-bootstrap";
 class ProposalModal extends Component {
   constructor(props) {
     super(props);
-    this.handleClose = this.handleClose.bind(this);
-    this.handleSave = this.handleSave.bind(this);
+    this.state = this.props;
+    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.getAvailableReviewers = this.getAvailableReviewers.bind(this);
   }
+
+  handleCheckbox(id, first, last, something) {
+    console.log("checkbox: ", id, first, last, something);
+
+    let updatedReviewers = this.state.assignedReviewers
+      ? this.state.assignedReviewers.concat(id)
+      : [id];
+    this.setState(
+      {
+        assignedReviewers: updatedReviewers
+      },
+      () => {
+        console.log("assigned", this.state.assignedReviewers);
+      }
+    );
+  }
+
+  componentWillMount() {
+    console.log("Proposal Modal state:", this.state);
+    console.log("available reviewers: ", this.getAvailableReviewers());
+    this.setState({
+      availableReviewers: this.getAvailableReviewers()
+    });
+  }
+  addReviewer() {}
+
+  getAvailableReviewers() {
+    console.log("reviewersAll", this.props.reviewersAll);
+    return this.props.reviewersAll.filter(rev => {
+      if (this.state.assignedReviewers) {
+        return !this.state.assignedReviewers.includes(rev);
+      } else return rev;
+    });
+  }
+  removeReviewer() {
+    console.log("removed");
+    return false;
+  }
+
+  addTag() {}
+
+  removeTag() {}
+
+  updateNote() {}
 
   handleClose() {
     console.log("id", this);
@@ -41,11 +86,45 @@ class ProposalModal extends Component {
 
     const lead = this.props.investigators[0];
 
-    let reviewers = this.props.reviewers.map(rev => {
+    let currentReviewers = this.state.assignedReviewers
+      ? this.state.assignedReviewers.map(rev => {
+          let thisReviewer = this.state.reviewersAll.find(
+            aReviewer => aReviewer._id === rev
+          );
+          console.log("thisReviewer: ", thisReviewer);
+          // console.log("rev ", rev);
+          // console.log("assigned in Current", this.state.assignedReviewers);
+          return (
+            <div key={rev}>
+              {thisReviewer.lastName}, {thisReviewer.firstName}{" "}
+              <a href="#" onClick={this.removeReviewer}>
+                X
+              </a>
+            </div>
+          );
+        })
+      : null;
+
+    // let availReviewers = this.props.reviewersAll.filter(rev => {
+    //   if (this.state.assignedReviewers) {
+    //     return !this.state.assignedReviewers.includes(rev);
+    //   } else return rev;
+    // });
+    // console.log("lxm:", availReviewers);
+    let availableReviewers = this.state.reviewersAll.map(rev => {
       return (
-        <div className="checkbox">
+        <div className="checkbox" key={rev._id}>
           <label>
-            <input type="checkbox" value={rev.hlKey} />
+            <input
+              type="checkbox"
+              value={rev._id}
+              onChange={this.handleCheckbox.bind(
+                this,
+                rev._id,
+                rev.firstName,
+                rev.lastName
+              )}
+            />
             {rev.lastName}, {rev.firstName}
           </label>
         </div>
@@ -54,7 +133,9 @@ class ProposalModal extends Component {
     return (
       <Modal.Dialog style={modalDialog} bsSize="large">
         <Modal.Header>
-          <Modal.Title>{this.props.title}</Modal.Title>
+          <Modal.Title>
+            {this.props.title} {this.props._id}
+          </Modal.Title>
         </Modal.Header>
 
         <Modal.Body style={modalBody}>
@@ -84,24 +165,22 @@ class ProposalModal extends Component {
           <hr />
           <br />
           <div className="form-group">
-            <div class="row">
-              <div class="col-md-6">Assigned Reviewers</div>
-              <div class="col-md-6">
-                Available Reviewers
-                <div class="row align-items-center">
-                  <div class="col-md-3">
-                    <Button onClick={this.handleClose}>&lt;&lt;Add</Button>
-                  </div>
-                  <div class="col-md-9 border rounded" style={reviewersDiv}>
-                    {reviewers}
-                  </div>
+            <div className="row">
+              <div className="col-md-6">
+                <div>Assigned Reviewers</div>
+                {currentReviewers}
+              </div>
+              <div className="col-md-6">
+                <div>Available Reviewers</div>
+                <div className="border rounded" style={availableReviewersStyle}>
+                  {availableReviewers}
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6">Tags</div>
-              <div class="col-md-6">
-                <label for="notes">Notes:</label>
+            <div className="row">
+              <div className="col-md-6">Tags</div>
+              <div className="col-md-6">
+                <label htmlFor="notes">Notes:</label>
                 <textarea className="form-control" rows="4" id="notes" />
               </div>
             </div>
@@ -130,9 +209,8 @@ const modalDialog = {
   overflowY: "initial !important"
 };
 
-const reviewersDiv = {
+const availableReviewersStyle = {
   height: "150px",
-  overflowY: "scroll",
-  float: "right"
+  overflowY: "scroll"
 };
 export default ProposalModal;
