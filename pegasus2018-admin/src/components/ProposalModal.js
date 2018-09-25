@@ -6,22 +6,52 @@ class ProposalModal extends Component {
   constructor(props) {
     super(props);
     this.state = this.props;
-    this.handleCheckbox = this.handleCheckbox.bind(this);
+    this.addReviewer = this.addReviewer.bind(this);
+    this.removeReviewer = this.removeReviewer.bind(this);
     this.getAvailableReviewers = this.getAvailableReviewers.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleClose = this.handleClose.bind(this);
   }
 
-  handleCheckbox(id, first, last, something) {
-    console.log("checkbox: ", id, first, last, something);
+  removeReviewer(id) {
+    let updatedReviewers = this.state.assignedReviewers;
+    this.setState(
+      {
+        assignedReviewers: updatedReviewers.filter(assigned => assigned !== id)
+      },
+      () => {
+        this.setState(
+          {
+            availableReviewers: this.getAvailableReviewers()
+          },
+          () => {
+            console.log(this.state);
+          }
+        );
+      }
+    );
+    return false;
+  }
 
+  addReviewer(id) {
     let updatedReviewers = this.state.assignedReviewers
       ? this.state.assignedReviewers.concat(id)
       : [id];
+
     this.setState(
       {
         assignedReviewers: updatedReviewers
       },
       () => {
-        console.log("assigned", this.state.assignedReviewers);
+        this.setState(
+          {
+            availableReviewers: this.getAvailableReviewers()
+          },
+          () => {
+            console.log("available: ", this.state.availableReviewers);
+            console.log("state ", this.state);
+          }
+        );
       }
     );
   }
@@ -33,19 +63,16 @@ class ProposalModal extends Component {
       availableReviewers: this.getAvailableReviewers()
     });
   }
-  addReviewer() {}
 
   getAvailableReviewers() {
     console.log("reviewersAll", this.props.reviewersAll);
     return this.props.reviewersAll.filter(rev => {
       if (this.state.assignedReviewers) {
-        return !this.state.assignedReviewers.includes(rev);
+        console.log("test", rev._id);
+        console.log(!this.state.assignedReviewers.includes(rev));
+        return !this.state.assignedReviewers.includes(rev._id);
       } else return rev;
     });
-  }
-  removeReviewer() {
-    console.log("removed");
-    return false;
   }
 
   addTag() {}
@@ -91,13 +118,10 @@ class ProposalModal extends Component {
           let thisReviewer = this.state.reviewersAll.find(
             aReviewer => aReviewer._id === rev
           );
-          console.log("thisReviewer: ", thisReviewer);
-          // console.log("rev ", rev);
-          // console.log("assigned in Current", this.state.assignedReviewers);
           return (
             <div key={rev}>
               {thisReviewer.lastName}, {thisReviewer.firstName}{" "}
-              <a href="#" onClick={this.removeReviewer}>
+              <a href="#" onClick={this.removeReviewer.bind(this, rev)}>
                 X
               </a>
             </div>
@@ -105,25 +129,14 @@ class ProposalModal extends Component {
         })
       : null;
 
-    // let availReviewers = this.props.reviewersAll.filter(rev => {
-    //   if (this.state.assignedReviewers) {
-    //     return !this.state.assignedReviewers.includes(rev);
-    //   } else return rev;
-    // });
-    // console.log("lxm:", availReviewers);
-    let availableReviewers = this.state.reviewersAll.map(rev => {
+    let availableReviewers = this.state.availableReviewers.map(rev => {
       return (
         <div className="checkbox" key={rev._id}>
           <label>
             <input
               type="checkbox"
               value={rev._id}
-              onChange={this.handleCheckbox.bind(
-                this,
-                rev._id,
-                rev.firstName,
-                rev.lastName
-              )}
+              onChange={this.addReviewer.bind(this, rev._id)}
             />
             {rev.lastName}, {rev.firstName}
           </label>
