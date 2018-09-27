@@ -26,7 +26,6 @@ class App extends Component {
     this.setState({ proposals: data.data.returnedStuff });
     const reviewers = await this.getReviewers();
     this.setState({ reviewersAll: reviewers.data.returnedStuff });
-    console.log("reviwers:", this.state.reviewersAll);
   }
 
   async getProposals() {
@@ -44,7 +43,6 @@ class App extends Component {
   }
 
   handleRowClick(id) {
-    console.log("proposal", this);
     let selectedProposal = this.state.proposals.filter(
       proposal => proposal._id === id
     );

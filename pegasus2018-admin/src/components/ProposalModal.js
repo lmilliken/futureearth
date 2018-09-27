@@ -11,8 +11,30 @@ class ProposalModal extends Component {
     this.getAvailableReviewers = this.getAvailableReviewers.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.toggleTag = this.toggleTag.bind(this);
   }
 
+  toggleTag(event) {
+    const tag = event.target.value;
+    if (this.state.tags) {
+      const tagArray = this.state.tags;
+      if (tagArray.includes(tag)) {
+        const index = tagArray.indexOf(tag);
+        tagArray.splice(index, 1);
+        this.setState({
+          tags: tagArray
+        });
+      } else {
+        this.setState({
+          tags: tagArray.concat(tag)
+        });
+      }
+    } else {
+      this.setState({
+        tags: [tag]
+      });
+    }
+  }
   removeReviewer(id) {
     let updatedReviewers = this.state.assignedReviewers;
     this.setState(
@@ -57,19 +79,14 @@ class ProposalModal extends Component {
   }
 
   componentWillMount() {
-    console.log("Proposal Modal state:", this.state);
-    console.log("available reviewers: ", this.getAvailableReviewers());
     this.setState({
       availableReviewers: this.getAvailableReviewers()
     });
   }
 
   getAvailableReviewers() {
-    console.log("reviewersAll", this.props.reviewersAll);
     return this.props.reviewersAll.filter(rev => {
       if (this.state.assignedReviewers) {
-        console.log("test", rev._id);
-        console.log(!this.state.assignedReviewers.includes(rev));
         return !this.state.assignedReviewers.includes(rev._id);
       } else return rev;
     });
@@ -143,6 +160,37 @@ class ProposalModal extends Component {
         </div>
       );
     });
+
+    const allTags = [
+      "Consumption & Production",
+      "Decarbonisation",
+      "Finance & Economics",
+      "Health",
+      "Natural Assets",
+      "Ocean",
+      "Risk",
+      "Urban",
+      "WEF Nexus"
+    ];
+
+    console.log("tags: ", this.state.tags);
+
+    const tags = allTags.map(tag => {
+      return (
+        <div id="tag" key={tag}>
+          <label>
+            <input
+              type="checkbox"
+              value={tag}
+              checked={this.state.tags ? this.state.tags.includes(tag) : false}
+              onChange={this.toggleTag}
+            />
+            {tag}
+          </label>
+        </div>
+      );
+    });
+
     return (
       <Modal.Dialog style={modalDialog} bsSize="large">
         <Modal.Header>
@@ -191,7 +239,10 @@ class ProposalModal extends Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-md-6">Tags</div>
+              <div className="col-md-6">
+                Tags
+                {tags}
+              </div>
               <div className="col-md-6">
                 <label htmlFor="notes">Notes:</label>
                 <textarea className="form-control" rows="4" id="notes" />

@@ -7,7 +7,6 @@ class ProposalRow extends Component {
   }
 
   handleRowClick() {
-    console.log("id", this);
     this.props.ahandleRowClick();
   }
 
