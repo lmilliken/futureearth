@@ -96,7 +96,7 @@ var getReviewers = req => {
             .find()
             .toArray()
             .then(returnedStuff => {
-              console.log("returned reviewers", returnedStuff);
+              // console.log("returned reviewers", returnedStuff);
               resolve({ returnedStuff });
             });
         }

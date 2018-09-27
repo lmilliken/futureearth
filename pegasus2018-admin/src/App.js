@@ -47,23 +47,33 @@ class App extends Component {
       proposal => proposal._id === id
     );
 
-    this.setState(
-      {
-        displayModal: true,
-        selected: selectedProposal[0]
-      },
-      () => {
-        console.log("new state", this.state);
-      }
-    );
+    this.setState({
+      displayModal: true,
+      selected: selectedProposal[0]
+    });
   }
 
   handleClose() {
     this.setState({ displayModal: false }, () => {});
   }
 
-  handleSave() {
+  handleSave(reviewers, tags, notes) {
+    console.log(reviewers, tags, notes);
+    console.log(
+      this.saveProposal(this.state.selected._id, reviewers, tags, notes)
+    );
     this.setState({ displayModal: false }, () => {});
+  }
+
+  saveProposal(id, reviewers, tags, notes) {
+    return axios
+      .post(`http://localhost:8081/adminupdate/${id}`, {
+        reviewers,
+        tags,
+        notes
+      })
+      .then(res => res)
+      .catch(err => console.log(err));
   }
 
   render() {

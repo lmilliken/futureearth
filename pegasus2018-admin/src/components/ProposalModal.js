@@ -12,6 +12,22 @@ class ProposalModal extends Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.toggleTag = this.toggleTag.bind(this);
+    this.updateNotes = this.updateNotes.bind(this);
+  }
+
+  handleSave() {
+    console.log("id", this);
+    this.props.handleModalSave(
+      this.state.assignedReviewers,
+      this.state.tags,
+      this.state.notes
+    );
+  }
+
+  updateNotes(event) {
+    this.setState({
+      notes: event.target.value
+    });
   }
 
   toggleTag(event) {
@@ -65,15 +81,9 @@ class ProposalModal extends Component {
         assignedReviewers: updatedReviewers
       },
       () => {
-        this.setState(
-          {
-            availableReviewers: this.getAvailableReviewers()
-          },
-          () => {
-            console.log("available: ", this.state.availableReviewers);
-            console.log("state ", this.state);
-          }
-        );
+        this.setState({
+          availableReviewers: this.getAvailableReviewers()
+        });
       }
     );
   }
@@ -92,20 +102,9 @@ class ProposalModal extends Component {
     });
   }
 
-  addTag() {}
-
-  removeTag() {}
-
-  updateNote() {}
-
   handleClose() {
     console.log("id", this);
     this.props.handleModalClose();
-  }
-
-  handleSave() {
-    console.log("id", this);
-    this.props.handleModalSave();
   }
 
   render() {
@@ -173,7 +172,7 @@ class ProposalModal extends Component {
       "WEF Nexus"
     ];
 
-    console.log("tags: ", this.state.tags);
+    console.log("state: ", this.state);
 
     const tags = allTags.map(tag => {
       return (
@@ -245,7 +244,12 @@ class ProposalModal extends Component {
               </div>
               <div className="col-md-6">
                 <label htmlFor="notes">Notes:</label>
-                <textarea className="form-control" rows="4" id="notes" />
+                <textarea
+                  className="form-control"
+                  rows="4"
+                  id="notes"
+                  onChange={this.updateNotes}
+                />
               </div>
             </div>
           </div>

@@ -78,3 +78,7 @@ app.get("/reviewers", (req, res) => {
     res.send(reviewers);
   });
 });
+
+app.post("/adminupdate/:id", (req, res) => {
+  console.log("post called");
+});
