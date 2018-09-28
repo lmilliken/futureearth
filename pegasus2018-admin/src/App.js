@@ -68,14 +68,11 @@ class App extends Component {
   saveProposal(id, reviewers, tags, notes) {
     return axios
       .post(`http://localhost:8081/adminupdate/${id}`, {
-        reviewers,
-        tags,
-        notes
+        reviewers: "something"
       })
-      .then(res => res)
+      .then(res => console.log(res))
       .catch(err => console.log(err));
   }
-
   render() {
     let proposals = this.state.proposals.map(aProposal => {
       return (

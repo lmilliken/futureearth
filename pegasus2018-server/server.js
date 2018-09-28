@@ -11,9 +11,15 @@ const emailClient = require("./utils/email-client");
 const port = process.env.PORT || 8081;
 var app = express();
 app.use(cors());
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
+});
+
+app.post("/adminupdate/:id", (req, res) => {
+  console.log("post called", req.body);
+  res.send("this is working");
 });
 
 app.use(express.static("./public"));
@@ -77,8 +83,4 @@ app.get("/reviewers", (req, res) => {
   mongoClient.getReviewers().then(reviewers => {
     res.send(reviewers);
   });
-});
-
-app.post("/adminupdate/:id", (req, res) => {
-  console.log("post called");
 });
