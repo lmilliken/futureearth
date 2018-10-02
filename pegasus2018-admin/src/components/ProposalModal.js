@@ -29,7 +29,8 @@ class ProposalModal extends Component {
       notes: event.target.value
     });
   }
-
+  //arrays: look up new removing/insert methods, new spread operator methods
+  //create each tag as its own component with its own state
   toggleTag(event) {
     const tag = event.target.value;
     if (this.state.tags) {

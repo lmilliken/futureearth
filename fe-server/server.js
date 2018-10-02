@@ -28,7 +28,6 @@ app.get("/mtl-consortium", (req, res) => {
         .find()
         .toArray()
         .then(function(returned) {
-          console.log(returned);
           res.send(returned);
         });
     }
