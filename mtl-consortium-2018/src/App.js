@@ -10,27 +10,42 @@ class App extends Component {
     this.state = {
       searchResults: [],
       keywords: [],
-      selectedTheme: [],
-      selectedLead: []
+      selectedThemes: [],
+      selectedLeads: []
     };
     this.handleThemes = this.handleThemes.bind(this);
     this.handleLeads = this.handleLeads.bind(this);
+    this.handleKeywords = this.handleKeywords.bind(this);
     this.search = this.search.bind(this);
   }
 
-  search() {
-    console.log("search clicked");
-    console.log(this.state.selectedTheme), console.log(this.state.selectedLead);
-  }
-
-  handleLeads = selectedLead => {
-    this.setState({ selectedLead });
-    console.log(`Option selected:`, selectedLead);
+  handleKeywords = event => {
+    const words = event.target.value.split(/[\s,]+/);
+    this.setState({ keywords: words });
   };
 
-  handleThemes = selectedTheme => {
-    this.setState({ selectedTheme });
-    console.log(`Option selected:`, selectedTheme);
+  search() {
+    // console.log("search leads: ", this.state.selectedLeads);
+    return axios
+      .get("http://localhost:8081/mtl-consortium-search", {
+        params: {
+          keywords: this.state.keywords,
+          themes: this.state.selectedThemes,
+          leads: this.state.selectedLeads
+        }
+      })
+      .then(res => console.log(res))
+      .catch(err => console.log(err));
+  }
+
+  handleLeads = selectedLeads => {
+    this.setState({ selectedLeads });
+    console.log(`Option selected:`, selectedLeads);
+  };
+
+  handleThemes = selectedThemes => {
+    this.setState({ selectedThemes });
+    console.log(`Option selected:`, selectedThemes);
   };
 
   async componentWillMount() {
@@ -113,6 +128,7 @@ class App extends Component {
               className="form-control"
               placeholder="Keywords"
               aria-describedby="basic-addon2"
+              onChange={this.handleKeywords}
             />
           </div>
           <div className="col-md-4">
@@ -135,7 +151,7 @@ class App extends Component {
             />
           </div>
           <div className="col-md-1">
-            <button className="btn btn-primary" disabled onClick={this.search}>
+            <button className="btn btn-primary" onClick={this.search}>
               Search
             </button>
           </div>
