@@ -12,10 +12,10 @@ class App extends Component {
   }
 
   async componentWillMount() {
-    const data = await this.getInstitutions();
-    console.log(data);
-    // this.getInstitutions();
-    this.setState({ institutions: data });
+    // const data = await this.getInstitutions();
+    // console.log(data);
+    // // this.getInstitutions();
+    // this.setState({ institutions: data });
   }
 
   getInstitutions() {
@@ -25,9 +25,9 @@ class App extends Component {
       .catch(err => console.log(err));
   }
   render() {
-    let cards = this.state.institutions.map(member => {
-      return <Card {...member} key={member._id} />;
-    });
+    // let cards = this.state.institutions.map(member => {
+    //   return <Card {...member} key={member._id} />;
+    // });
 
     const themes = {
       K_CP: "Consumption & Production",
@@ -86,7 +86,7 @@ class App extends Component {
         </div>
 
         <div className="gridContainer" style={constainerStyle}>
-          {cards}
+          {/* {cards} */}
         </div>
       </div>
     );
