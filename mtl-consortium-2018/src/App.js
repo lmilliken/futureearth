@@ -85,10 +85,18 @@ class App extends Component {
           </div>
         </div>
 
-        <div className="row justify-content-center">{cards}</div>
+        <div className="gridContainer" style={constainerStyle}>
+          {cards}
+        </div>
       </div>
     );
   }
 }
+
+const constainerStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+  gridGap: "15px"
+};
 
 export default App;

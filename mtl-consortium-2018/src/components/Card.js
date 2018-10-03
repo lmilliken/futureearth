@@ -12,7 +12,7 @@ class Card extends Component {
 
   render() {
     return (
-      <div className="card col-lg-3 col-md-6" style={styles}>
+      <div className="card" style={styles}>
         <div className="card-body">
           <h5 className="card-title">{this.props.INST_SHORT}</h5>
           <h6 className="card-subtitle mb-2 text-muted">
@@ -32,7 +32,7 @@ class Card extends Component {
 }
 
 const styles = {
-  width: "100%",
+  // width: "100%",
   margin: "10px",
   textAlign: "left",
   top: "0",
