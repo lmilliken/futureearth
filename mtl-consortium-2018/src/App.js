@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import axios from "axios";
 import Card from "./components/Card";
+import Select from "react-select";
 
 class App extends Component {
   constructor(props) {
@@ -29,22 +30,22 @@ class App extends Component {
     //   return <Card {...member} key={member._id} />;
     // });
 
-    const themes = {
-      K_CP: "Consumption & Production",
-      K_DECARB: "Decarbonisation",
-      K_FE: "What is FE?",
-      K_FWE: "Food-Water-Energy",
-      K_HEALTH: "Health",
-      K_NA: "Natural Assets",
-      K_OCEAN: "Ocean",
-      K_RISK: "Risk",
-      K_URBAN: "Urban"
-    };
+    const themeOptions = [
+      { value: "K_CP", label: "Consumption & Production" },
+      { value: "K_DECARB", label: "Decarbonisation" },
+      { value: "K_FE", label: "What is FE?" },
+      { value: "K_FWE", label: "Food-Water-Energy" },
+      { value: "K_HEALTH", label: "Health" },
+      { value: "K_NA", label: "Natural Assets" },
+      { value: "K_OCEAN", label: "Ocean" },
+      { value: "K_RISK", label: "Risk" },
+      { value: "K_URBAN", label: "Urban" }
+    ];
 
-    console.log(Object.keys(themes));
-    Object.keys(themes).map(function(key, index) {
-      console.log(key + ": " + themes[key]);
-    });
+    // console.log(Object.keys(themes));
+    // Object.keys(themes).map(function(key, index) {
+    //   console.log(key + ": " + themes[key]);
+    // });
 
     // console.log("themese ", themesSelect);
     return (
@@ -60,26 +61,15 @@ class App extends Component {
             <button className="btn">Clear Filters</button>
           </div>
           <div className="col-md-4">
-            <div>Themes</div>
-            {Object.keys(themes).map(function(key) {
-              return (
-                <div>
-                  {/* Key: {key}, Value: {themes[key]} */}
-                  <label>
-                    <input
-                      type="checkbox"
-                      value={key}
-                      // checked={
-                      //   this.state.tags ? this.state.tags.includes(tag) : false
-                      // }
-                      // onChange={this.toggleTag}
-                    />
-                    {themes[key]}
-                  </label>
-                </div>
-              );
-            })}
+            <Select
+              // value={selectedOption}
+              // onChange={this.handleChange}
+              isMulti={true}
+              options={themeOptions}
+              placeholder="Themes"
+            />
           </div>
+
           <div className="col-md-4">
             <div>Lead Institutions</div>
           </div>
