@@ -32,13 +32,16 @@ class Card extends Component {
 }
 
 const styles = {
-  // width: "18rem",
+  width: "100%",
   margin: "10px",
   textAlign: "left",
   top: "0",
   overflow: "hidden",
   // position: "absolute",
   animation:
-    "slide-in-bottom 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal both running"
+    "slide-in-bottom 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal both running",
+  border: "1px solid 	#DCDCDC",
+  borderRadius: "5px",
+  padding: "10px"
 };
 export default Card;

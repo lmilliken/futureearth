@@ -20,7 +20,7 @@ class App extends Component {
 
   getInstitutions() {
     return axios
-      .get("http://localhost:8081/mtl-consortium")
+      .get("https://fe-server.herokuapp.com/mtl-consortium")
       .then(res => res.data)
       .catch(err => console.log(err));
   }
