@@ -21,22 +21,36 @@ app.get("/mtl-consortium-search", (req, res) => {
   if (!req.query.keywords && !req.query.themes && !req.query.leads) {
   } else {
     queryParams = { $or: [] };
-    let themes = [];
+
+    if (req.query.keywords) {
+      queryParams.$or.push({ $text: { $search: req.query.keywords } });
+    }
+
     if (req.query.themes) {
-      themes = req.query.themes.map(item => {
+      req.query.themes.map(item => {
         let obj = {};
         let thisItem = JSON.parse(item);
         obj[thisItem.value] = 1;
         queryParams.$or.push(obj);
       });
-
       // console.log(typeof queryParams.$or);
       // queryParams.$or.push({ something: "something" });
-      console.log(
-        util.inspect(queryParams, false, null, true /* enable colors */)
-      );
+
       // console.log({ queryParams });
     }
+    if (req.query.leads) {
+      let leadArray = [];
+      leads = req.query.leads.map(lead => {
+        let item = JSON.parse(lead);
+        leadArray.push(item.value);
+      });
+      console.log({ leadArray });
+      queryParams.$or.push({ LEAD_INST: { $in: leadArray } });
+    }
+
+    console.log(
+      util.inspect(queryParams, false, null, true /* enable colors */)
+    );
   }
 
   // res.send("this is your response");

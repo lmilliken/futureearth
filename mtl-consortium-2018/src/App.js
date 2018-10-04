@@ -8,7 +8,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResults: [],
+      searchResults: "",
       keywords: [],
       selectedThemes: [],
       selectedLeads: []
@@ -20,7 +20,10 @@ class App extends Component {
   }
 
   handleKeywords = event => {
-    const words = event.target.value.split(/[\s,]+/);
+    const words = event.target.value
+      .trim()
+      .split(/[,]+/)
+      .join(" ");
     this.setState({ keywords: words });
   };
 
@@ -113,7 +116,7 @@ class App extends Component {
         value: "Université du Québec en Abitibi-Témiscamingue",
         label: "Université du Québec en Abitibi-Témiscamingue"
       },
-      { value: "McGill Universit", label: "McGill University" },
+      { value: "McGill University", label: "McGill University" },
       { value: "Concordia University", label: "Concordia University" },
       { value: "INRS", label: "INRS" },
       {
