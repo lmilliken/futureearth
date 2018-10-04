@@ -34,8 +34,16 @@ class App extends Component {
           leads: this.state.selectedLeads
         }
       })
-      .then(res => console.log(res))
+      .then(res => {
+        console.log(res);
+        this.setState({ searchResults: res.data });
+      })
       .catch(err => console.log(err));
+  }
+
+  componentDidMount() {
+    console.log("component did mount");
+    this.setState({ searchResults: [] }, () => console.log(this.state));
   }
 
   handleLeads = selectedLeads => {
@@ -119,6 +127,30 @@ class App extends Component {
     // });
 
     // console.log("themese ", themesSelect);
+
+    // {this.state.submitStatus === "pending" && (
+    //   <div
+    //     className="progress"
+    //     style={{ width: "200px", margin: "auto" }}
+    //   >
+    //     <div
+    //       className="progress-bar progress-bar-striped progress-bar-animated"
+    //       role="progressbar"
+    //       aria-valuenow="20"
+    //       aria-valuemin="0"
+    //       aria-valuemax="20"
+    //       style={{ width: "100%" }}
+    //     />
+    //   </div>
+    // )}
+
+    let cards;
+    if (this.state.searchResults.length > 0) {
+      cards = this.state.searchResults.map(thisOne => {
+        return <Card {...thisOne} key={thisOne._id} />;
+      });
+    }
+
     return (
       <div className="container">
         <div className="row">
@@ -158,7 +190,7 @@ class App extends Component {
         </div>
 
         <div className="gridContainer" style={constainerStyle}>
-          {/* {cards} */}
+          {cards}
         </div>
         <div>Search for institutions.</div>
       </div>
