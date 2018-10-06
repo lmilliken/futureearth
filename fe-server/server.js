@@ -66,6 +66,7 @@ app.get("/mtl-consortium-search", (req, res) => {
       console.log("connected");
       db.collection("mtl-consortium")
         .find(queryParams)
+        .sort({ INST_NAME: 1 })
         .toArray()
         .then(function(returned) {
           res.send(returned);
