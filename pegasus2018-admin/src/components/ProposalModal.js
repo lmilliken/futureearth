@@ -207,9 +207,7 @@ class ProposalModal extends Component {
     return (
       <Modal.Dialog style={modalDialog} bsSize="large">
         <Modal.Header>
-          <Modal.Title>
-            {this.props.title} {this.props._id}
-          </Modal.Title>
+          <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body style={modalBody}>

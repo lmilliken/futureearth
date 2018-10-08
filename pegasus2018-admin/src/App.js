@@ -3,6 +3,13 @@ import "./App.css";
 import axios from "axios";
 import ProposalRow from "./components/ProposalRow";
 import ProposalModal from "./components/ProposalModal";
+// const config = require("./config.js");
+
+console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
+let SERVER_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://pegasus2018-server.herokuapp.com"
+    : "http://localhost:8081";
 
 class App extends Component {
   constructor(props) {
@@ -23,6 +30,7 @@ class App extends Component {
 
   async componentWillMount() {
     const data = await this.getProposals();
+    console.log("SERVER_URL from process.env.NODE_ENV", SERVER_URL);
     console.log({ data });
     this.setState({ proposals: data.data.returnedStuff });
     const reviewers = await this.getReviewers();
@@ -31,7 +39,7 @@ class App extends Component {
 
   async getProposals() {
     return axios
-      .get("https://pegasus2018-server.herokuapp.com/proposals")
+      .get(`${SERVER_URL}/proposals`)
       .then(res => res)
       .catch(err => console.log(err));
   }
@@ -39,7 +47,7 @@ class App extends Component {
 
   async getReviewers() {
     return axios
-      .get("https://pegasus2018-server.herokuapp.com/reviewers")
+      .get(`${SERVER_URL}/reviewers`)
       .then(res => res)
       .catch(err => console.log(err));
   }
@@ -94,10 +102,6 @@ class App extends Component {
     });
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Proposal Administration Portal</h1>
-        </header>
-        <p>Hi Craig</p>
         <table className="table table-hover">
           <thead>
             <tr>
