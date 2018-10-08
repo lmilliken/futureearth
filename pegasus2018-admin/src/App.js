@@ -23,6 +23,7 @@ class App extends Component {
 
   async componentWillMount() {
     const data = await this.getProposals();
+    console.log({ data });
     this.setState({ proposals: data.data.returnedStuff });
     const reviewers = await this.getReviewers();
     this.setState({ reviewersAll: reviewers.data.returnedStuff });
@@ -30,14 +31,15 @@ class App extends Component {
 
   async getProposals() {
     return axios
-      .get("http://localhost:8081/proposals")
+      .get("https://pegasus2018-server.herokuapp.com/proposals")
       .then(res => res)
       .catch(err => console.log(err));
   }
+  //"http://localhost:8081/reviewers"
 
   async getReviewers() {
     return axios
-      .get("http://localhost:8081/reviewers")
+      .get("https://pegasus2018-server.herokuapp.com/reviewers")
       .then(res => res)
       .catch(err => console.log(err));
   }
