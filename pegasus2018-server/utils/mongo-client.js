@@ -4,6 +4,42 @@ var ObjectId = require("mongodb").ObjectID;
 let parentFtpDirectory = "http://apply.futureearth.org/pegasus2018/";
 let dbCollection = "pegasus2018-playground";
 
+let saveAssignment = req => {
+  return new Promise((resolve, reject) => {
+    console.log("assigned reviewers: ", req.body.reviewers);
+    MongoClient.connect(
+      process.env.DB,
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          console.log("successfully connected");
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-playground")
+            .update(
+              { _id: ObjectId(req.params.id) },
+              {
+                $set: {
+                  assignedReviewers: req.body.reviewers,
+                  tags: req.body.tags,
+                  notes: req.body.notes
+                }
+              },
+              {
+                upsert: false
+              }
+            )
+            .then(function(returned) {
+              console.log("successfully saved assignment ", returned);
+              resolve({ returned });
+              //send them an email confirmation
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
+
 var saveToDB = req => {
   let objectToSave = {
     title: req.body.title,
@@ -105,4 +141,4 @@ var getReviewers = req => {
   });
 };
 
-module.exports = { saveToDB, getProposals, getReviewers };
+module.exports = { saveToDB, getProposals, getReviewers, saveAssignment };

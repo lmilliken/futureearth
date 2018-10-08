@@ -17,12 +17,20 @@ app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
 
-app.post("/adminupdate/:id", (req, res) => {
-  console.log("post called", req.body);
-  res.send("this is working");
-});
-
 app.use(express.static("./public"));
+
+app.post("/adminupdate/:id", (req, res) => {
+  console.log("post called", req.params.id);
+  mongoClient
+    .saveAssignment(req)
+    .then(res.send("this is working"))
+    .catch(err => {
+      res.statusMessage =
+        "Sorry, an error was encountered while saving your application (Email Client): " +
+        err;
+      res.status(400).end();
+    });
+});
 
 // it's a little messy, can't do Promise.all because the next function needs output from previous function, can do async/await but need to work on try/catch blocks for them
 app.post("/submit", (req, res) => {

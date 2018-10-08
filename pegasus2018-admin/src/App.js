@@ -57,20 +57,27 @@ class App extends Component {
     this.setState({ displayModal: false }, () => {});
   }
 
-  handleSave(reviewers, tags, notes) {
-    console.log(reviewers, tags, notes);
-    console.log(
-      this.saveProposal(this.state.selected._id, reviewers, tags, notes)
-    );
-    this.setState({ displayModal: false }, () => {});
+  async handleSave(reviewers, tags, notes) {
+    console.log("in async handle save");
+
+    this.saveProposal(this.state.selected._id, reviewers, tags, notes);
   }
 
   saveProposal(id, reviewers, tags, notes) {
     return axios
       .post(`http://localhost:8081/adminupdate/${id}`, {
-        reviewers: "something"
+        reviewers,
+        tags,
+        notes
       })
-      .then(res => console.log(res))
+      .then(async res => {
+        console.log(res);
+        const data = await this.getProposals();
+        this.setState({
+          proposals: data.data.returnedStuff,
+          displayModal: false
+        });
+      })
       .catch(err => console.log(err));
   }
   render() {

@@ -11,6 +11,12 @@ class ProposalRow extends Component {
   }
 
   render() {
+    let tags;
+
+    if (this.props.tags) {
+      tags = this.props.tags.join(", ");
+    }
+
     return (
       <tr onClick={this.handleRowClick}>
         <td className="text-left">{this.props.title}</td>
@@ -22,11 +28,16 @@ class ProposalRow extends Component {
         <td className="text-left">
           {this.props.investigators[0].countryCitizenship}
         </td>
-        <td className="text-left"> </td>
+        <td className="text-left" style={tagSize}>
+          {tags}
+        </td>
+        <td className="text-left">{this.props.notes} </td>
         <td />
       </tr>
     );
   }
 }
-
+const tagSize = {
+  fontSize: "x-small"
+};
 export default ProposalRow;

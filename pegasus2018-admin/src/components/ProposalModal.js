@@ -137,10 +137,17 @@ class ProposalModal extends Component {
           );
           return (
             <div key={rev}>
+              {" "}
               {thisReviewer.lastName}, {thisReviewer.firstName}{" "}
-              <a href="#" onClick={this.removeReviewer.bind(this, rev)}>
+              {/* <a href="#" onClick={this.removeReviewer.bind(this, rev)}>
                 X
-              </a>
+              </a> */}
+              <span
+                className="glyphicon glyphicon-remove"
+                style={deleteStyle}
+                aria-hidden="true"
+                onClick={this.removeReviewer.bind(this, rev)}
+              />
             </div>
           );
         })
@@ -149,6 +156,12 @@ class ProposalModal extends Component {
     let availableReviewers = this.state.availableReviewers.map(rev => {
       return (
         <div className="checkbox" key={rev._id}>
+          {/* <span
+            className="glyphicon glyphicon-plus"
+            style={deleteStyle}
+            aria-hidden="true"
+            onClick={this.removeReviewer.bind(this, rev)}
+          /> */}
           <label>
             <input
               type="checkbox"
@@ -250,6 +263,7 @@ class ProposalModal extends Component {
                   rows="4"
                   id="notes"
                   onChange={this.updateNotes}
+                  value={this.state.notes}
                 />
               </div>
             </div>
@@ -272,6 +286,11 @@ const modalBody = {
   maxHeight: "500px",
   overflow: "auto",
   textAlign: "left"
+};
+
+const deleteStyle = {
+  color: "silver",
+  cursor: "pointer"
 };
 
 const modalDialog = {
