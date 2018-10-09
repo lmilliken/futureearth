@@ -141,4 +141,37 @@ var getReviewers = req => {
   });
 };
 
-module.exports = { saveToDB, getProposals, getReviewers, saveAssignment };
+const findUser = key => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-reviewers")
+            .find({ HLContactKey: key })
+            .toArray()
+            .then(returned => {
+              if (returned.length < 1) {
+                reject(
+                  "You are not authorized.  If you think this is an error, please contact Laurel"
+                );
+              }
+              console.log("returned", returned);
+              resolve({ returned });
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
+
+module.exports = {
+  saveToDB,
+  getProposals,
+  getReviewers,
+  saveAssignment,
+  findUser
+};

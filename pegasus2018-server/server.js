@@ -7,6 +7,7 @@ const multerClient = require("./utils/multer-client");
 const ftpClient = require("./utils/ftp-client");
 const mongoClient = require("./utils/mongo-client");
 const emailClient = require("./utils/email-client");
+const { authenticate } = require("./utils/authenticate");
 
 const port = process.env.PORT || 8081;
 var app = express();
@@ -18,6 +19,15 @@ app.listen(port, () => {
 });
 
 app.use(express.static("./public"));
+
+app.get("/reviewers/assigned", authenticate, (req, res) => {
+  console.log("new request: ", req.Reviewer.FirstName);
+  res.send(
+    `You have been authenticated! User: ${
+      req.Reviewer.FirstName
+    }, ContactKey: ${req.Reviewer.ContactKey}`
+  );
+});
 
 app.post("/adminupdate/:id", (req, res) => {
   console.log("post called", req.params.id);
