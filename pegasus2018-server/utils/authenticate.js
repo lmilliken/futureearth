@@ -11,41 +11,41 @@ var authenticate = async (req, res, next) => {
       HLAuthToken: req.header("HLAuthToken")
     }
   };
+  console.log("in authenticate.js");
 
   axios(authOptions)
     .then(returned => {
-      //   console.log("returned: ", returned);
+      // console.log("axios call to HL successfull ", returned);
       req.Reviewer = returned.data;
       req.FirstName = returned.data.FirstName;
       req.LastName = returned.data.LastName;
       mongoClient
         .findUser(req.Reviewer.ContactKey)
-        .then(confirmedContactKey => {
-          console.log("user confirmed");
+        .then(confirmedUser => {
+          if (confirmedUser.length < 1) {
+            console.log("user not confirmed");
+            res.status(501).send("this is not working in Mongo");
+          }
+
           next();
         })
-        .catch(e => {
-          console.log("error in authenticate.js", e);
-          res.send(e);
+        .catch(err => {
+          // console.log("find user failed");
+          console.log("Laurel, error: ", err);
+          res
+            .status(500)
+            .send(
+              "Authentication via Higher Logic failed.  Please contact Laurel."
+            );
         });
-      //   next();
     })
     .catch(err => {
-      console.log("there is an error", err), this.setState({ statusOK: false });
+      console.log("Laurel, error from HL", err.response.data.Message);
+      res.statusMessage = `An error was encountered with Higher Logic authentication.  Please see Laurel. ${
+        err.response.data.Message
+      }`;
+      res.status(403).send();
     });
-
-  //   User.findByToken(token)
-  //     .then(user => {
-  //       if (!user) {
-  //         return Promise.reject();
-  //       }
-  //       req.user = user;
-  //       req.token = token;
-  //       next();
-  //     })
-  //     .catch(e => {
-  //       res.status(401).send();
-  //     });
 };
 
 module.exports = { authenticate };

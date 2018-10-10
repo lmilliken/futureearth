@@ -142,9 +142,11 @@ var getReviewers = req => {
 };
 
 const findUser = key => {
+  console.log("find user called");
   return new Promise((resolve, reject) => {
     MongoClient.connect(
       process.env.DB,
+      { useNewUrlParser: true },
       function(err, client) {
         if (err) {
           reject("Could not connect to MongoDB: ", err);
@@ -153,14 +155,33 @@ const findUser = key => {
           db.collection("pegasus2018-reviewers")
             .find({ HLContactKey: key })
             .toArray()
-            .then(returned => {
-              if (returned.length < 1) {
-                reject(
-                  "You are not authorized.  If you think this is an error, please contact Laurel"
-                );
-              }
-              console.log("returned", returned);
-              resolve({ returned });
+            .then(confirmedReviewer => {
+              console.log({ confirmedReviewer });
+              resolve(confirmedReviewer);
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
+
+const getAssignedReviews = key => {
+  console.log("find user called");
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      { useNewUrlParser: true },
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-reviewers")
+            .find({ HLContactKey: key })
+            .toArray()
+            .then(confirmedReviewer => {
+              console.log({ confirmedReviewer });
+              resolve(confirmedReviewer);
             });
         }
       }
@@ -173,5 +194,6 @@ module.exports = {
   getProposals,
   getReviewers,
   saveAssignment,
-  findUser
+  findUser,
+  getAssignedReviews
 };

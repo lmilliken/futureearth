@@ -11,7 +11,12 @@ const { authenticate } = require("./utils/authenticate");
 
 const port = process.env.PORT || 8081;
 var app = express();
-app.use(cors());
+app.use(cors({ origin: "*" }));
+// app.all("/", function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+// });
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(port, () => {
@@ -21,12 +26,17 @@ app.listen(port, () => {
 app.use(express.static("./public"));
 
 app.get("/reviewers/assigned", authenticate, (req, res) => {
-  console.log("new request: ", req.Reviewer.FirstName);
   res.send(
     `You have been authenticated! User: ${
       req.Reviewer.FirstName
     }, ContactKey: ${req.Reviewer.ContactKey}`
   );
+
+  // console.log("new request: ", req);
+  // mongoClient
+  //   .getAssignedReviews(req.Reviewer.ContactKey)
+  //   .then()
+  //   .catch();
 });
 
 app.post("/adminupdate/:id", (req, res) => {

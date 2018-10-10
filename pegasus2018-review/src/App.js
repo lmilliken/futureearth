@@ -16,9 +16,7 @@ class App extends Component {
   }
 
   async getAssignedReviews() {
-    // let HLAuthToken =
-    //   this.getCookieValue("HLAuthToken") ||
-    //   "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+XtyE/karGt7d6jRRNt3z3Wg4yVAJJ7iP9NvJdXtP2X44C7QPv15gHoyqZpXAQbOjmKcA/tMxuZjpiZqFpEAbBm";
+    // let HLAuthToken = this.getCookieValue("HLAuthToken");
     // if (!HLAuthToken) {
     //   return this.setState({
     //     statusOK: false,
@@ -26,48 +24,30 @@ class App extends Component {
     //   });
     // }
 
-    // console.log({ HLAuthToken });
+    console.log("token: ", this.getCookieValue("HLAuthToken"));
 
     const options = {
       method: "GET",
-      url: "https://pegasus2018-server.herokuapp.com/reviewers/assigned",
+      url: "http://localhost:8081/reviewers/assigned",
       headers: {
-        HLAuthToken: this.getCookieValue("HLAuthToken") //|| "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+XtyE/karGt7d6jRRNt3z3Wg4yVAJJ7iP9NvJdXtP2X44C7QPv15gHoyqZpXAQbOjmKcA/tMxuZjh32XkdZkiaP"
+        HLAuthToken:
+          this.getCookieValue("HLAuthToken") ||
+          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+XtyE/karGt7d6jRRNt3z3Wg4yVAJJ7iP9NvJdXtP2X44C7QPv15gHoJVGArjLRk8U4DQ65DpRZZZzexMMknwzWxx"
       }
     };
 
     return axios(options)
       .then(res => res)
       .catch(err => {
-        console.log("there is an error", err),
-          this.setState({ statusOK: false });
+        console.log("there is an error", err.response),
+          this.setState({
+            statusOK: false,
+            statusMessage: `An error occurred.  Please contact Laurel. ${
+              err.response
+            }`
+          });
       });
   }
-
-  // async checkAuthUser() {
-  //   // why is process.env.HL_KEY not working?
-
-  //   var authOptions = {
-  //     method: "GET",
-  //     url: "https://api.connectedcommunity.org/api/v2.0/Contacts/GetWhoAmI",
-  //     withCredentials: true,
-  //     headers: {
-  //       HLIAMKey: keys.HL_KEY,
-  //       HLAuthToken:
-  //         this.getCookieValue("HLAuthToken") ||
-  //         "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+XtyE/karGt7d6jRRNt3z3Wg4yVAJJ7iP9NvJdXtP2X44C7QPv15gHoZiz7OR16CMUhgqBezqMYzuAYjgYqxG7K"
-  //     }
-  //   };
-
-  //   console.log({ authOptions });
-
-  //   return axios(authOptions)
-  //     .then(res => res)
-  //     .catch(err => {
-  //       console.log("there is an error", err),
-  //         this.setState({ statusOK: false });
-  //     });
-  // }
 
   getCookieValue(cookieName) {
     var b = document.cookie.match(
