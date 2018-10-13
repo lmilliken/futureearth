@@ -32,20 +32,22 @@ class App extends Component {
       headers: {
         HLAuthToken:
           this.getCookieValue("HLAuthToken") ||
-          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+XtyE/karGt7d6jRRNt3z3Wg4yVAJJ7iP9NvJdXtP2X44C7QPv15gHoJVGArjLRk8U4DQ65DpRZZZzexMMknwzWxx"
+          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wHjS4ZzTgGD1Wsk+Vg3zm1vmL7Is2UnMU8"
       }
     };
 
     return axios(options)
       .then(res => res)
       .catch(err => {
-        console.log("there is an error", err.response),
-          this.setState({
-            statusOK: false,
-            statusMessage: `An error occurred.  Please contact Laurel. ${
-              err.response
-            }`
-          });
+        console.log("there is an error", err.response);
+        let errorMessage = err;
+        if (err.response) {
+          errorMessage = err.response.statusText;
+        }
+        this.setState({
+          statusOK: false,
+          statusMessage: errorMessage
+        });
       });
   }
 
@@ -58,7 +60,7 @@ class App extends Component {
 
   render() {
     if (this.state.statusOK === false) {
-      return <p>{this.state.statusMessage}</p>;
+      return <p className="error-message">{this.state.statusMessage}</p>;
     } else {
       return <div className="App" />;
     }

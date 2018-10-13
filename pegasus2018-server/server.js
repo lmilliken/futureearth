@@ -26,17 +26,16 @@ app.listen(port, () => {
 app.use(express.static("./public"));
 
 app.get("/reviewers/assigned", authenticate, (req, res) => {
-  res.send(
-    `You have been authenticated! User: ${
-      req.Reviewer.FirstName
-    }, ContactKey: ${req.Reviewer.ContactKey}`
-  );
-
-  // console.log("new request: ", req);
-  // mongoClient
-  //   .getAssignedReviews(req.Reviewer.ContactKey)
-  //   .then()
-  //   .catch();
+  console.log("new request: ", req);
+  mongoClient
+    .getAssignedReviews(req.Reviewer.ContactKey)
+    .then(applications => {
+      res.send({
+        reviewer: req.Reviewer,
+        assignedReviews: applications
+      });
+    })
+    .catch();
 });
 
 app.post("/adminupdate/:id", (req, res) => {

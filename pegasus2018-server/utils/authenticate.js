@@ -23,10 +23,9 @@ var authenticate = async (req, res, next) => {
         .findUser(req.Reviewer.ContactKey)
         .then(confirmedUser => {
           if (confirmedUser.length < 1) {
-            console.log("user not confirmed");
-            res.status(501).send("this is not working in Mongo");
+            res.statusMessage = "You are not authorized to view this page";
+            res.status(501).send();
           }
-
           next();
         })
         .catch(err => {

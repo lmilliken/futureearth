@@ -131,9 +131,9 @@ var getReviewers = req => {
           db.collection("pegasus2018-reviewers")
             .find()
             .toArray()
-            .then(returnedStuff => {
-              // console.log("returned reviewers", returnedStuff);
-              resolve({ returnedStuff });
+            .then(reviewers => {
+              console.log({ reviewers });
+              resolve({ reviewers });
             });
         }
       }
@@ -166,7 +166,7 @@ const findUser = key => {
 };
 
 const getAssignedReviews = key => {
-  console.log("find user called");
+  console.log("reviewer key: ", key);
   return new Promise((resolve, reject) => {
     MongoClient.connect(
       process.env.DB,
@@ -176,12 +176,12 @@ const getAssignedReviews = key => {
           reject("Could not connect to MongoDB: ", err);
         } else {
           var db = client.db("fcc-lxm");
-          db.collection("pegasus2018-reviewers")
-            .find({ HLContactKey: key })
+          db.collection("pegasus2018-playground")
+            .find({ assignedReviewers: key })
             .toArray()
-            .then(confirmedReviewer => {
-              console.log({ confirmedReviewer });
-              resolve(confirmedReviewer);
+            .then(applications => {
+              console.log({ applications });
+              resolve(applications);
             });
         }
       }

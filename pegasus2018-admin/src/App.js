@@ -6,10 +6,10 @@ import ProposalModal from "./components/ProposalModal";
 // const config = require("./config.js");
 
 console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
-let SERVER_URL =
-  process.env.NODE_ENV === "production"
-    ? "https://pegasus2018-server.herokuapp.com"
-    : "http://localhost:8081";
+let SERVER_URL = "http://localhost:8081";
+// process.env.NODE_ENV === "production"
+//   ? "https://pegasus2018-server.herokuapp.com"
+//   : "http://localhost:8081";
 
 class App extends Component {
   constructor(props) {
@@ -34,7 +34,7 @@ class App extends Component {
     console.log({ data });
     this.setState({ proposals: data.data.returnedStuff });
     const reviewers = await this.getReviewers();
-    this.setState({ reviewersAll: reviewers.data.returnedStuff });
+    this.setState({ reviewersAll: reviewers });
   }
 
   async getProposals() {
@@ -48,7 +48,7 @@ class App extends Component {
   async getReviewers() {
     return axios
       .get(`${SERVER_URL}/reviewers`)
-      .then(res => res)
+      .then(res => res.data.reviewers)
       .catch(err => console.log(err));
   }
 
