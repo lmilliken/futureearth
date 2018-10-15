@@ -89,11 +89,7 @@ class ProposalModal extends Component {
     );
   }
 
-  componentWillMount() {
-    this.setState({
-      availableReviewers: this.getAvailableReviewers()
-    });
-  }
+  componentWillMount() {}
 
   getAvailableReviewers() {
     return this.props.reviewersAll.filter(rev => {
@@ -109,71 +105,6 @@ class ProposalModal extends Component {
   }
 
   render() {
-    // let investigators = this.props.investigators.map(inv => {
-    //   return (
-    // <div>
-    //   <p>
-    //     <strong>
-    //       {inv.firstName} {inv.lastName}
-    //     </strong>
-    //     <br />
-    //     {inv.institution}
-    //     <br />
-    //     {inv.countryWork} (work)
-    //     <br />
-    //     {inv.countryCitizenship} (citizenship)
-    //     <br />
-    //   </p>
-    // </div>
-    //   );
-    // });
-
-    const lead = this.props.investigators[0];
-
-    let currentReviewers = this.state.assignedReviewers
-      ? this.state.assignedReviewers.map(rev => {
-          let thisReviewer = this.state.reviewersAll.find(
-            aReviewer => aReviewer.HLContactKey === rev
-          );
-          return (
-            <div key={rev}>
-              {" "}
-              {thisReviewer.lastName}, {thisReviewer.firstName}{" "}
-              {/* <a href="#" onClick={this.removeReviewer.bind(this, rev)}>
-                X
-              </a> */}
-              <span
-                className="glyphicon glyphicon-remove"
-                style={deleteStyle}
-                aria-hidden="true"
-                onClick={this.removeReviewer.bind(this, rev)}
-              />
-            </div>
-          );
-        })
-      : null;
-
-    let availableReviewers = this.state.availableReviewers.map(rev => {
-      return (
-        <div className="checkbox" key={rev.HLContactKey}>
-          {/* <span
-            className="glyphicon glyphicon-plus"
-            style={deleteStyle}
-            aria-hidden="true"
-            onClick={this.removeReviewer.bind(this, rev)}
-          /> */}
-          <label>
-            <input
-              type="checkbox"
-              value={rev.HLContactKey}
-              onChange={this.addReviewer.bind(this, rev.HLContactKey)}
-            />
-            {rev.lastName}, {rev.firstName}
-          </label>
-        </div>
-      );
-    });
-
     const allTags = [
       "Consumption & Production",
       "Decarbonisation",
@@ -216,20 +147,7 @@ class ProposalModal extends Component {
         </Modal.Header>
 
         <Modal.Body style={modalBody}>
-          <div>
-            <p>
-              <strong>
-                {lead.firstName} {lead.lastName}
-              </strong>
-              <br />
-              {lead.institution}
-              <br />
-              {lead.countryWork} (work)
-              <br />
-              {lead.countryCitizenship} (citizenship)
-              <br />
-            </p>
-          </div>
+          this is the modal body
           <center>
             <a target="_blank" href={this.props.linkToProposal}>
               Proposal
@@ -239,38 +157,75 @@ class ProposalModal extends Component {
               Budget
             </a>
           </center>
-          <hr />
-          <br />
-          <div className="form-group">
-            <div className="row">
-              <div className="col-md-6">
-                <div>Assigned Reviewers</div>
-                {currentReviewers}
-              </div>
-              <div className="col-md-6">
-                <div>Available Reviewers</div>
-                <div className="border rounded" style={availableReviewersStyle}>
-                  {availableReviewers}
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-md-6">
-                Tags
-                {tags}
-              </div>
-              <div className="col-md-6">
-                <label htmlFor="notes">Notes:</label>
-                <textarea
-                  className="form-control"
-                  rows="4"
-                  id="notes"
-                  onChange={this.updateNotes}
-                  value={this.state.notes}
-                />
-              </div>
-            </div>
-          </div>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="">Ratings</th>
+                <th class="">Excellent</th>
+                <th class="">Very Good</th>
+                <th class="">Good</th>
+                <th class="">Fair</th>
+                <th class="">Poor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd">
+                <td class="">
+                  The technical excellence and feasibility of planning and
+                  executing the Research Plan within the proposed budget and
+                  time constraints (50%)
+                </td>
+                <td class="">
+                  <input
+                    required
+                    type="radio"
+                    id="technical-execellence-feasbility"
+                    name="technical-execellence-feasbility"
+                    value="10"
+                    class="form-radio"
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="technical-execellence-feasbility"
+                    name="technical-execellence-feasbility"
+                    value="8"
+                    class="form-radio"
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="technical-execellence-feasbility"
+                    name="technical-execellence-feasbility"
+                    value="6"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="technical-execellence-feasbility"
+                    name="technical-execellence-feasbility"
+                    value="4"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="technical-execellence-feasbility"
+                    name="technical-execellence-feasbility"
+                    value="2"
+                    class="form-radio"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </Modal.Body>
 
         <Modal.Footer>

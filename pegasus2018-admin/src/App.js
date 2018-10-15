@@ -15,7 +15,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      submitStatus: "new",
       proposals: [],
       reviewersAll: [],
       selected: {},
@@ -57,10 +56,15 @@ class App extends Component {
       proposal => proposal._id === id
     );
 
-    this.setState({
-      displayModal: true,
-      selected: selectedProposal[0]
-    });
+    this.setState(
+      {
+        displayModal: true,
+        selected: selectedProposal[0]
+      },
+      () => {
+        console.log("state after click: ", this.state);
+      }
+    );
   }
 
   handleClose() {
