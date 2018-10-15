@@ -8,3 +8,5 @@ Evaluation criteria
 3. Clear and intriguing science questions, and relation to the Future Earth mission
 4. Diversity in sectors, disciplines and members of working groups.
 5. Cost-effective use of Future Earth funding and leveraging of other funds.
+6. Do you recommend this proposal for funding (1-3)
+7. Comments
