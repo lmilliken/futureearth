@@ -13,8 +13,16 @@ class ProposalModal extends Component {
     this.handleClose = this.handleClose.bind(this);
     this.toggleTag = this.toggleTag.bind(this);
     this.updateNotes = this.updateNotes.bind(this);
+    this.handleRadio = this.handleRadio.bind(this);
   }
 
+  handleRadio(event) {
+    const criteria = event.target.name;
+    const value = event.target.value;
+    this.setState({ [criteria]: value }, () => {
+      console.log("state equals 4?: ", this.state.scoreTheme == 4);
+    });
+  }
   handleSave() {
     console.log("id", this);
     this.props.handleModalSave(
@@ -105,40 +113,12 @@ class ProposalModal extends Component {
   }
 
   render() {
-    const allTags = [
-      "Consumption & Production",
-      "Decarbonisation",
-      "Finance & Economics",
-      "Health",
-      "Natural Assets",
-      "Ocean",
-      "Risk",
-      "Urban",
-      "WEF Nexus"
-    ];
-
     console.log("state: ", this.state);
-
-    const tags = allTags.map(tag => {
-      return (
-        <div id="tag" key={tag}>
-          <label>
-            <input
-              type="checkbox"
-              value={tag}
-              checked={this.state.tags ? this.state.tags.includes(tag) : false}
-              onChange={this.toggleTag}
-            />
-            {tag}
-          </label>
-        </div>
-      );
-    });
-
+    //html grid
     return (
       <Modal
         style={modalDialog}
-        bsSize="large"
+        bsSize="lg"
         onHide={this.handleClose}
         show="true"
       >
@@ -160,7 +140,7 @@ class ProposalModal extends Component {
           <table class="table table-striped">
             <thead>
               <tr>
-                <th class="">Ratings</th>
+                <th class="">Criteria</th>
                 <th class="">Excellent</th>
                 <th class="">Very Good</th>
                 <th class="">Good</th>
@@ -171,16 +151,79 @@ class ProposalModal extends Component {
             <tbody>
               <tr class="odd">
                 <td class="">
-                  The technical excellence and feasibility of planning and
-                  executing the Research Plan within the proposed budget and
-                  time constraints (50%)
+                  Extent to which the research focuses on one or more of the
+                  Thematic Areas
                 </td>
                 <td class="">
                   <input
                     required
                     type="radio"
-                    id="technical-execellence-feasbility"
-                    name="technical-execellence-feasbility"
+                    id="scoreTheme"
+                    name="scoreTheme"
+                    value="10"
+                    class="form-radio"
+                    checked={this.state.scoreTheme == 10}
+                    onChange={this.handleRadio}
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreTheme"
+                    name="scoreTheme"
+                    value="8"
+                    class="form-radio"
+                    checked={this.state.scoreTheme == 8}
+                    onChange={this.handleRadio}
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreTheme"
+                    name="scoreTheme"
+                    value="6"
+                    class="form-radio"
+                    checked={this.state.scoreTheme == 6}
+                    onChange={this.handleRadio}
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreTheme"
+                    name="scoreTheme"
+                    value="4"
+                    class="form-radio"
+                    checked={this.state.scoreTheme == 4}
+                    onChange={this.handleRadio}
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreTheme"
+                    name="scoreTheme"
+                    value="2"
+                    class="form-radio"
+                    checked={this.state.scoreTheme == 2}
+                    onChange={this.handleRadio}
+                  />
+                </td>
+              </tr>
+              <tr class="even">
+                <td class="">
+                  Direct path to impacting policy or practice and broad
+                  applicability of results
+                </td>
+                <td class="">
+                  <input
+                    required
+                    type="radio"
+                    id="scoreImpact"
+                    name="scoreImpact"
                     value="10"
                     class="form-radio"
                   />
@@ -189,8 +232,8 @@ class ProposalModal extends Component {
                 <td class="">
                   <input
                     type="radio"
-                    id="technical-execellence-feasbility"
-                    name="technical-execellence-feasbility"
+                    id="scoreImpact"
+                    name="scoreImpact"
                     value="8"
                     class="form-radio"
                   />
@@ -199,8 +242,8 @@ class ProposalModal extends Component {
                 <td class="">
                   <input
                     type="radio"
-                    id="technical-execellence-feasbility"
-                    name="technical-execellence-feasbility"
+                    id="scoreImpact"
+                    name="scoreImpact"
                     value="6"
                     class="form-radio"
                   />
@@ -208,8 +251,8 @@ class ProposalModal extends Component {
                 <td class="">
                   <input
                     type="radio"
-                    id="technical-execellence-feasbility"
-                    name="technical-execellence-feasbility"
+                    id="scoreImpact"
+                    name="scoreImpact"
                     value="4"
                     class="form-radio"
                   />
@@ -217,8 +260,169 @@ class ProposalModal extends Component {
                 <td class="">
                   <input
                     type="radio"
-                    id="technical-execellence-feasbility"
-                    name="technical-execellence-feasbility"
+                    id="scoreImpact"
+                    name="scoreImpact"
+                    value="2"
+                    class="form-radio"
+                  />
+                </td>
+              </tr>
+
+              <tr class="odd">
+                <td class="">
+                  Clear and intriguing science questions, and relation to the
+                  Future Earth mission
+                </td>
+                <td class="">
+                  <input
+                    required
+                    type="radio"
+                    id="scoreMission"
+                    name="scoreMission"
+                    value="10"
+                    class="form-radio"
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreMission"
+                    name="scoreMission"
+                    value="8"
+                    class="form-radio"
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreMission"
+                    name="scoreMission"
+                    value="6"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreMission"
+                    name="scoreMission"
+                    value="4"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreMission"
+                    name="scoreMission"
+                    value="2"
+                    class="form-radio"
+                  />
+                </td>
+              </tr>
+
+              <tr class="even">
+                <td class="">
+                  Diversity in sectors, disciplines and members of working
+                  groups.
+                </td>
+                <td class="">
+                  <input
+                    required
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="10"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="8"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="6"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="4"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="2"
+                    class="form-radio"
+                  />
+                </td>
+              </tr>
+
+              <tr class="even">
+                <td class="">
+                  Cost-effective use of Future Earth funding and leveraging of
+                  other funds.
+                </td>
+                <td class="">
+                  <input
+                    required
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="10"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="8"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="6"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
+                    value="4"
+                    class="form-radio"
+                  />
+                </td>
+                <td class="">
+                  <input
+                    type="radio"
+                    id="scoreCost"
+                    name="scoreCost"
                     value="2"
                     class="form-radio"
                   />
@@ -226,6 +430,53 @@ class ProposalModal extends Component {
               </tr>
             </tbody>
           </table>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="">Recommendation</th>
+                <th class="">Highly recommend</th>
+                <th class="">Recommend</th>
+                <th class="">Do not recommend</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="odd">
+                <td class="">Would you recommend this proposal for funding?</td>
+                <td class="">
+                  <input
+                    required
+                    type="radio"
+                    id="recommendation"
+                    name="recommendation"
+                    value="3"
+                    class="form-radio"
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="recommendation"
+                    name="recommendation"
+                    value="1"
+                    class="form-radio"
+                  />
+                </td>
+
+                <td class="">
+                  <input
+                    type="radio"
+                    id="recommendation"
+                    name="recommendation"
+                    value="0"
+                    class="form-radio"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <label>Additional comments:</label>
+          <textarea name="comments" class="form-control" rows="3" />
         </Modal.Body>
 
         <Modal.Footer>
@@ -246,17 +497,8 @@ const modalBody = {
   textAlign: "left"
 };
 
-const deleteStyle = {
-  color: "silver",
-  cursor: "pointer"
-};
-
 const modalDialog = {
   overflowY: "initial !important"
 };
 
-const availableReviewersStyle = {
-  height: "150px",
-  overflowY: "scroll"
-};
 export default ProposalModal;

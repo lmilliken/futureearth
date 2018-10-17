@@ -69,7 +69,7 @@ class App extends Component {
       headers: {
         HLAuthToken:
           this.getCookieValue("HLAuthToken") ||
-          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wH9RNwvh8Ywlb0eW6G2VlHbETKINRTL/uTNZ9h4cGPhRM="
+          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wH9RNwvh8YwlYuEcrPTMQSZKl1+EJiZEnb"
       }
     };
 
@@ -97,19 +97,21 @@ class App extends Component {
 
   render() {
     console.log("state: ", this.state);
-    let incompleteProposals = this.state.assignedProposals.map(aProposal => {
-      return (
-        <ProposalRow
-          {...aProposal}
-          key={aProposal._id}
-          ahandleRowClick={() => this.handleRowClick(aProposal._id)}
-        />
-      );
-    });
 
     if (this.state.statusOK === false) {
-      return <p className="error-message">{this.state.statusMessage}</p>;
+      return (
+        <p className="error-message">{this.state.statusMessage.toString()}</p>
+      );
     } else {
+      let incompleteProposals = this.state.assignedProposals.map(aProposal => {
+        return (
+          <ProposalRow
+            {...aProposal}
+            key={aProposal._id}
+            ahandleRowClick={() => this.handleRowClick(aProposal._id)}
+          />
+        );
+      });
       return (
         <div className="App">
           <p>Please complete a review of the following proposals:</p>

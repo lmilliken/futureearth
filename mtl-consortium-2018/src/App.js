@@ -37,7 +37,7 @@ class App extends Component {
     // https://fe-server.herokuapp.com/
     e.preventDefault();
     return axios
-      .get("http://localhost:8081/mtl-consortium-search", {
+      .get("https://fe-server.herokuapp.com/mtl-consortium-search", {
         params: {
           keywords:
             this.state.keywords.length > 0
@@ -217,7 +217,12 @@ class App extends Component {
           {cards}
         </div>
         {this.state.searchResults.length === 0 && (
-          <div>Search for institutions.</div>
+          <div>
+            Search for institutions.
+            <br />
+            <br />
+            <br />
+          </div>
         )}
       </div>
     );
