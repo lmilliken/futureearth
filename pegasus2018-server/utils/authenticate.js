@@ -15,8 +15,11 @@ var authenticate = async (req, res, next) => {
 
   axios(authOptions)
     .then(returned => {
-      // console.log("axios call to HL successfull ", returned);
+      console.log("axios call to HL successfull ", returned);
       //error code 422? look into this 500s: when express server crashes, 400s: "client" error
+      req.Reviewer = returned.data;
+      req.FirstName = returned.data.FirstName;
+      req.LastName = returned.data.LastName;
 
       mongoClient
         .findUser(req.Reviewer.ContactKey)
@@ -25,9 +28,7 @@ var authenticate = async (req, res, next) => {
             res.statusMessage = "You are not authorized to view this page";
             res.status(401).send();
           }
-          req.Reviewer = returned.data;
-          req.FirstName = returned.data.FirstName;
-          req.LastName = returned.data.LastName;
+
           next();
         })
         .catch(err => {
@@ -41,7 +42,7 @@ var authenticate = async (req, res, next) => {
         });
     })
     .catch(err => {
-      console.log("Laurel, error from HL", err.response);
+      console.log("Laurel, error from HL", err);
       res.statusMessage = `An error was encountered with Higher Logic authentication.  Please see Laurel. ${
         err.response.data.Message
       }`;

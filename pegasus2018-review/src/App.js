@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
 import ProposalRow from "./components/ProposalRow";
-import ProposalModal from "./components/ProposalModal";
+import ReviewModal from "./components/ReviewModal";
 
 class App extends Component {
   constructor(props) {
@@ -69,7 +69,7 @@ class App extends Component {
       headers: {
         HLAuthToken:
           this.getCookieValue("HLAuthToken") ||
-          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wH9RNwvh8YwlYuEcrPTMQSZKl1+EJiZEnb"
+          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wHDPXD2PSj7bqArQNcbAv5fNtcaDikLCLC"
       }
     };
 
@@ -127,7 +127,7 @@ class App extends Component {
           </table>
 
           {this.state.displayModal === true && (
-            <ProposalModal
+            <ReviewModal
               {...this.state.selected}
               key={this.state.selected._id}
               handleModalClose={this.handleClose}
