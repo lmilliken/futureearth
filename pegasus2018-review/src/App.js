@@ -1,44 +1,90 @@
 import React, { Component } from "react";
 import axios from "axios";
 import "./App.css";
-require("dotenv").config();
-const keys = require("./keys.js");
+import ProposalRow from "./components/ProposalRow";
+import ReviewModal from "./components/ReviewModal";
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { statusOK: true };
-    this.checkAuthUser = this.checkAuthUser.bind(this);
+    this.state = {
+      statusOK: true,
+      assignedProposals: [],
+      selected: {},
+      displayModal: false
+    };
+    this.getAssignedProposals = this.getAssignedProposals.bind(this);
+    this.handleRowClick = this.handleRowClick.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+
+  handleClose() {
+    this.setState({ displayModal: false }, () => {});
+  }
+
+  async handleSave(reviewers, tags, notes) {
+    this.setState({ displayModal: false }, () => {});
+  }
+
+  handleRowClick(id) {
+    let selectedProposal = this.state.assignedProposals.filter(
+      proposal => proposal._id === id
+    );
+
+    this.setState(
+      {
+        displayModal: true,
+        selected: selectedProposal[0]
+      },
+      () => {
+        console.log("state after click: ", this.state);
+      }
+    );
   }
 
   async componentWillMount() {
-    const data = await this.checkAuthUser();
+    console.log("component will mount");
+    const data = await this.getAssignedProposals();
 
-    console.log({ data });
+    this.setState({ assignedProposals: data }, () =>
+      console.log("state: ", this.state)
+    );
   }
 
-  async checkAuthUser() {
-    // why is process.env.HL_KEY not working?
+  async getAssignedProposals() {
+    // let HLAuthToken = this.getCookieValue("HLAuthToken");
+    // if (!HLAuthToken) {
+    //   return this.setState({
+    //     statusOK: false,
+    //     statusMessage: "Error: User has no HLAuthToken.  Please contact Laurel."
+    //   });
+    // }
 
-    var authOptions = {
+    console.log("token: ", this.getCookieValue("HLAuthToken"));
+
+    const options = {
       method: "GET",
-      url: "https://api.connectedcommunity.org/api/v2.0/Contacts/GetWhoAmI",
-      withCredentials: true,
+      url: "http://localhost:8081/reviewers/assigned",
       headers: {
-        HLIAMKey: keys.HL_KEY,
         HLAuthToken:
           this.getCookieValue("HLAuthToken") ||
-          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+XtyE/karGt7d6jRRNt3z3Wg4yVAJJ7iP9NvJdXtP2X44C7QPv15gHoZiz7OR16CMUhgqBezqMYzuAYjgYqxG7K"
+          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wHDPXD2PSj7bqArQNcbAv5fNtcaDikLCLC"
       }
     };
 
-    console.log({ authOptions });
-
-    return axios(authOptions)
-      .then(res => res)
+    return axios(options)
+      .then(res => res.data.assignedReviews)
       .catch(err => {
-        console.log("there is an error", err),
-          this.setState({ statusOK: false });
+        console.log("there is an error", err.response);
+        let errorMessage = err;
+        if (err.response) {
+          errorMessage = err.response.statusText;
+        }
+        this.setState({
+          statusOK: false,
+          statusMessage: errorMessage
+        });
       });
   }
 
@@ -50,15 +96,44 @@ class App extends Component {
   }
 
   render() {
+    console.log("state: ", this.state);
+
     if (this.state.statusOK === false) {
-      return <p>Something went wrong, please contact Laurel.</p>;
+      return (
+        <p className="error-message">{this.state.statusMessage.toString()}</p>
+      );
     } else {
+      let incompleteProposals = this.state.assignedProposals.map(aProposal => {
+        return (
+          <ProposalRow
+            {...aProposal}
+            key={aProposal._id}
+            ahandleRowClick={() => this.handleRowClick(aProposal._id)}
+          />
+        );
+      });
       return (
         <div className="App">
-          <header className="App-header">
-            <h1 className="App-title">PEGASuS Review</h1>
-          </header>
-          <p className="App-intro" />
+          <p>Please complete a review of the following proposals:</p>
+          <table className="table table-hover">
+            <thead>
+              <tr>
+                <th className="text-left">Title</th>
+                <th className="text-left">Lead</th>
+                <th className="text-left">Tags</th>
+              </tr>
+            </thead>
+            <tbody>{incompleteProposals}</tbody>
+          </table>
+
+          {this.state.displayModal === true && (
+            <ReviewModal
+              {...this.state.selected}
+              key={this.state.selected._id}
+              handleModalClose={this.handleClose}
+              handleModalSave={this.handleSave}
+            />
+          )}
         </div>
       );
     }

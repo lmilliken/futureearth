@@ -36,10 +36,12 @@ class Card extends Component {
     return (
       <div className="card" style={styles}>
         <div className="card-body">
-          <h5 className="card-title">{this.props.INST_SHORT}</h5>
-          <h6 className="card-subtitle mb-2 text-muted">
+          <h2 style={titleStyle} className="card-title">
+            {this.props.INST_SHORT}
+          </h2>
+          <h3 className="card-subtitle mb-2 text-muted">
             {this.props.INST_NAME}
-          </h6>
+          </h3>
           <p className="card-text">
             <strong>Lead: </strong>
             {this.props.LEAD_INST}
@@ -59,6 +61,11 @@ class Card extends Component {
   }
 }
 
+const titleStyle = {
+  // width: "100%",
+  marginTop: "5px"
+};
+
 const styles = {
   // width: "100%",
   margin: "10px",
@@ -68,8 +75,9 @@ const styles = {
   // position: "absolute",
   animation:
     "slide-in-bottom 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0s 1 normal both running",
-  border: "1px solid 	#DCDCDC",
+  border: "1px solid 	rgba(0, 158, 225, .2)",
   borderRadius: "5px",
-  padding: "10px"
+  padding: "10px",
+  boxShadow: "0px 0px 4px rgba(0, 158, 225, .75)"
 };
 export default Card;

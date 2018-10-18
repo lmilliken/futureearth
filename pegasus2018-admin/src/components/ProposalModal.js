@@ -98,7 +98,7 @@ class ProposalModal extends Component {
   getAvailableReviewers() {
     return this.props.reviewersAll.filter(rev => {
       if (this.state.assignedReviewers) {
-        return !this.state.assignedReviewers.includes(rev._id);
+        return !this.state.assignedReviewers.includes(rev.HLContactKey);
       } else return rev;
     });
   }
@@ -133,7 +133,7 @@ class ProposalModal extends Component {
     let currentReviewers = this.state.assignedReviewers
       ? this.state.assignedReviewers.map(rev => {
           let thisReviewer = this.state.reviewersAll.find(
-            aReviewer => aReviewer._id === rev
+            aReviewer => aReviewer.HLContactKey === rev
           );
           return (
             <div key={rev}>
@@ -155,7 +155,7 @@ class ProposalModal extends Component {
 
     let availableReviewers = this.state.availableReviewers.map(rev => {
       return (
-        <div className="checkbox" key={rev._id}>
+        <div className="checkbox" key={rev.HLContactKey}>
           {/* <span
             className="glyphicon glyphicon-plus"
             style={deleteStyle}
@@ -165,8 +165,8 @@ class ProposalModal extends Component {
           <label>
             <input
               type="checkbox"
-              value={rev._id}
-              onChange={this.addReviewer.bind(this, rev._id)}
+              value={rev.HLContactKey}
+              onChange={this.addReviewer.bind(this, rev.HLContactKey)}
             />
             {rev.lastName}, {rev.firstName}
           </label>
@@ -205,8 +205,13 @@ class ProposalModal extends Component {
     });
 
     return (
-      <Modal.Dialog style={modalDialog} bsSize="large">
-        <Modal.Header>
+      <Modal
+        style={modalDialog}
+        bsSize="large"
+        onHide={this.handleClose}
+        show="true"
+      >
+        <Modal.Header closeButton>
           <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
 
@@ -274,7 +279,7 @@ class ProposalModal extends Component {
             Save
           </Button>
         </Modal.Footer>
-      </Modal.Dialog>
+      </Modal>
     );
   }
 }

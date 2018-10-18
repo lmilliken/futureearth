@@ -7,10 +7,16 @@ const multerClient = require("./utils/multer-client");
 const ftpClient = require("./utils/ftp-client");
 const mongoClient = require("./utils/mongo-client");
 const emailClient = require("./utils/email-client");
+const { authenticate } = require("./utils/authenticate");
 
 const port = process.env.PORT || 8081;
 var app = express();
-app.use(cors());
+app.use(cors({ origin: "*" }));
+// app.all("/", function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next();
+// });
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(port, () => {
@@ -18,6 +24,19 @@ app.listen(port, () => {
 });
 
 app.use(express.static("./public"));
+
+app.get("/reviewers/assigned", authenticate, (req, res) => {
+  console.log("new request: ", req);
+  mongoClient
+    .getAssignedReviews(req.Reviewer.ContactKey)
+    .then(applications => {
+      res.send({
+        reviewer: req.Reviewer,
+        assignedReviews: applications
+      });
+    })
+    .catch();
+});
 
 app.post("/adminupdate/:id", (req, res) => {
   console.log("post called", req.params.id);
