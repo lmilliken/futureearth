@@ -20,7 +20,6 @@ class RatingRadio extends Component {
           name={this.props.name}
           value={this.props.score}
           onClick={this.handleClick}
-          required
         />
       </td>
     );

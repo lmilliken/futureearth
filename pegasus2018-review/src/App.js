@@ -69,7 +69,7 @@ class App extends Component {
       headers: {
         HLAuthToken:
           this.getCookieValue("HLAuthToken") ||
-          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wHDPXD2PSj7bqArQNcbAv5fNtcaDikLCLC"
+          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wHlR6SiU1QH8N5pHyDrD7QhACUD/ryC+Wa"
       }
     };
 
@@ -96,8 +96,6 @@ class App extends Component {
   }
 
   render() {
-    console.log("state: ", this.state);
-
     if (this.state.statusOK === false) {
       return (
         <p className="error-message">{this.state.statusMessage.toString()}</p>

@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import { Button } from "react-bootstrap";
+import axios from "axios";
+
 import CriteriaRow from "./CriteriaRow";
 import RecommendationRow from "./RecommendationRow";
 
@@ -8,28 +10,58 @@ class ReviewModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedProposal: this.props
+      selectedProposal: this.props,
+      selectedReview: {}
     };
 
     this.handleSave = this.handleSave.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.updateNotes = this.updateNotes.bind(this);
     this.handleRadio = this.handleRadio.bind(this);
+    this.updateComments = this.updateComments.bind(this);
+  }
+
+  updateComments(e) {
+    let tempSelectedReview = { ...this.state.selectedReview };
+    tempSelectedReview.comments = e.target.value;
+    this.setState({ selectedReview: tempSelectedReview });
   }
 
   handleRadio(name, value) {
-    console.log("in proposal modal", name, value);
-    this.setState({ [name]: value }, () => {
-      console.log(this.state);
-    });
+    let tempSelectedReview = { ...this.state.selectedReview };
+    tempSelectedReview[name] = value;
+    this.setState({ selectedReview: tempSelectedReview });
   }
-  handleSave() {
-    console.log("id", this);
-    this.props.handleModalSave(
-      this.state.assignedReviewers,
-      this.state.tags,
-      this.state.notes
+
+  getCookieValue(cookieName) {
+    var b = document.cookie.match(
+      "(^|;)\\s*" + cookieName + "\\s*=\\s*([^;]+)"
     );
+    return b ? b.pop() : null;
+  }
+
+  handleSave(event) {
+    event.preventDefault();
+    console.log("save", this.state);
+    // this.props.handleModalSave(
+    //   this.state.assignedReviewers,
+    //   this.state.tags,
+    //   this.state.notes
+    // );
+    axios({
+      method: "POST",
+      url: "http://localhost:8081/reviewers/addReview",
+      headers: {
+        HLAuthToken:
+          this.getCookieValue("HLAuthToken") ||
+          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wHlR6SiU1QH8N5pHyDrD7QhACUD/ryC+Wa"
+      },
+      data: this.state.selectedReview
+    })
+      .then(res => console.log(res))
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   updateNotes(event) {
@@ -39,7 +71,9 @@ class ReviewModal extends Component {
   }
 
   componentWillMount() {
-    console.log("state of modal: ", this.state);
+    let tempSelectedReview = { ...this.state.selectedReview };
+    tempSelectedReview.idProposal = this.props._id;
+    this.setState({ selectedReview: tempSelectedReview });
   }
 
   getAvailableReviewers() {
@@ -51,13 +85,10 @@ class ReviewModal extends Component {
   }
 
   handleClose() {
-    console.log("id", this);
     this.props.handleModalClose();
   }
 
   render() {
-    console.log("state: ", this.state);
-
     const criteria = [
       {
         name: "scoreTheme",
@@ -86,10 +117,14 @@ class ReviewModal extends Component {
     ];
 
     const criteriaRows = criteria.map(aCriterion => {
-      return <CriteriaRow handleRadio={this.handleRadio} {...aCriterion} />;
+      return (
+        <CriteriaRow
+          key={aCriterion.name}
+          handleRadio={this.handleRadio}
+          {...aCriterion}
+        />
+      );
     });
-
-    console.log("critiera rows: ", criteriaRows);
 
     return (
       <Modal
@@ -101,46 +136,49 @@ class ReviewModal extends Component {
         <Modal.Header closeButton>
           <Modal.Title>{this.props.title}</Modal.Title>
         </Modal.Header>
+        <form onSubmit={this.handleSave}>
+          <Modal.Body style={modalBody}>
+            this is the modal body
+            <center>
+              <a target="_blank" href={this.props.linkToProposal}>
+                Proposal
+              </a>{" "}
+              -{" "}
+              <a target="_blank" href={this.props.linkToBudget}>
+                Budget
+              </a>
+            </center>
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th>Criteria</th>
+                  <th>Excellent</th>
+                  <th>Very Good</th>
+                  <th>Good</th>
+                  <th>Fair</th>
+                  <th>Poor</th>
+                </tr>
+              </thead>
+              <tbody>{criteriaRows}</tbody>
+            </table>
+            <RecommendationRow handleRadio={this.handleRadio} />
+            <label>Additional comments:</label>
+            <textarea
+              name="comments"
+              class="form-control"
+              rows="3"
+              onChange={this.updateComments}
+              value={this.state.comments}
+            />
+          </Modal.Body>
 
-        <Modal.Body style={modalBody}>
-          this is the modal body
-          <center>
-            <a target="_blank" href={this.props.linkToProposal}>
-              Proposal
-            </a>{" "}
-            -{" "}
-            <a target="_blank" href={this.props.linkToBudget}>
-              Budget
-            </a>
-          </center>
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th class="">Criteria</th>
-                <th class="">Excellent</th>
-                <th class="">Very Good</th>
-                <th class="">Good</th>
-                <th class="">Fair</th>
-                <th class="">Poor</th>
-              </tr>
-            </thead>
-            <tbody>{criteriaRows}</tbody>
-          </table>
-          <RecommendationRow />
-          <label>Additional comments:</label>
-          <textarea name="comments" class="form-control" rows="3" />
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button onClick={this.handleClose}>Close</Button>
-          <Button
-            onClick={this.handleSave}
-            className="btn btn-primary"
-            bsStyle="primary"
-          >
-            Save
-          </Button>
-        </Modal.Footer>
+          <Modal.Footer>
+            <Button onClick={this.handleClose}>Close</Button>
+            <Button className="btn btn-primary" bsStyle="primary" type="submit">
+              Save
+            </Button>
+          </Modal.Footer>
+        </form>
       </Modal>
     );
   }

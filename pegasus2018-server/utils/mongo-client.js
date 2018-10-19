@@ -1,9 +1,36 @@
 var MongoClient = require("mongodb");
+var MongoClient = require("mongodb");
 var ObjectId = require("mongodb").ObjectID;
 
 let parentFtpDirectory = "http://apply.futureearth.org/pegasus2018/";
 let dbCollection = "pegasus2018-playground";
 
+addReview = (req, res) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-reviews")
+            .update(
+              { _id: ObjectId(req.body._id) },
+              { ...req.body },
+              {
+                upsert: true
+              }
+            )
+            .then(returnedStuff => {
+              console.log("returned", returnedStuff);
+              resolve({ returnedStuff });
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
 let saveAssignment = req => {
   return new Promise((resolve, reject) => {
     console.log("assigned reviewers: ", req.body.reviewers);
@@ -195,5 +222,6 @@ module.exports = {
   getReviewers,
   saveAssignment,
   findUser,
-  getAssignedReviews
+  getAssignedReviews,
+  addReview
 };
