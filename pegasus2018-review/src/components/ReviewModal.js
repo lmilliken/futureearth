@@ -6,6 +6,8 @@ import axios from "axios";
 import CriteriaRow from "./CriteriaRow";
 import RecommendationRow from "./RecommendationRow";
 
+import temp from "./../tempKeys";
+
 class ReviewModal extends Component {
   constructor(props) {
     super(props);
@@ -52,9 +54,7 @@ class ReviewModal extends Component {
       method: "POST",
       url: "http://localhost:8081/reviewers/addReview",
       headers: {
-        HLAuthToken:
-          this.getCookieValue("HLAuthToken") ||
-          "8FeaXCM0MWDFIO3TRHX5+d81h2TX2qB93Hl+2BWqa+UQ+Ww1xjHwo2eZOaIG5KZPxySUydkGQIgauKBrOHhmEb+RusZM89wHlR6SiU1QH8N5pHyDrD7QhACUD/ryC+Wa"
+        HLAuthToken: this.getCookieValue("HLAuthToken") || temp.token
       },
       data: this.state.selectedReview
     })

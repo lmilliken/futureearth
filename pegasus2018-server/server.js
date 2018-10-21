@@ -39,6 +39,17 @@ app.post("/reviewers/addReview", authenticate, (req, res) => {
     });
 });
 
+app.get("/reviewers/completed", authenticate, (req, res) => {
+  mongoClient
+    .getCompletedReviews(req.Reviewer.ContactKey)
+    .then(applications => {
+      res.send({
+        applications
+      });
+    })
+    .catch();
+});
+
 app.get("/reviewers/assigned", authenticate, (req, res) => {
   console.log("new request: ", req);
   mongoClient

@@ -17,7 +17,11 @@ addReview = (req, res) => {
           db.collection("pegasus2018-reviews")
             .update(
               { _id: ObjectId(req.body._id) },
-              { ...req.body },
+              {
+                idReviewer: req.Reviewer.ContactKey,
+                ...req.body,
+                time: Date.now()
+              },
               {
                 upsert: true
               }
@@ -216,6 +220,29 @@ const getAssignedReviews = key => {
   });
 };
 
+const getCompletedReviews = contactKey => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      { useNewUrlParser: true },
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-reviews")
+            .find({ idReviewer: contactKey })
+            .toArray()
+            .then(applications => {
+              console.log({ applications });
+              resolve(applications);
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
+
 module.exports = {
   saveToDB,
   getProposals,
@@ -223,5 +250,6 @@ module.exports = {
   saveAssignment,
   findUser,
   getAssignedReviews,
+  getCompletedReviews,
   addReview
 };
