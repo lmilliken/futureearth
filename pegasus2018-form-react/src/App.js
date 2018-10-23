@@ -2,6 +2,8 @@ import React, { Component } from "react";
 
 import Investigator from "./components/Investigator";
 import InvestigatorCo from "./components/InvestigatorCo";
+
+const axios = require("axios");
 const uuidv1 = require("uuid/v1");
 
 class App extends Component {
@@ -97,11 +99,14 @@ class App extends Component {
     console.log("submit!");
     const data = new FormData(event.target);
     ///check if investigators is array or a single person
-    console.log("data: ", event.target);
-    fetch("http://localhost:8081/submit", {
-      method: "POST",
-      body: data
-    })
+    // console.log("data: ", event.target);
+    // fetch("http://localhost:8081/submit", {
+    //   method: "POST",
+    //   body: data
+    // })
+
+    axios
+      .post("https://pegasus2018-server.herokuapp.com/submit", data)
       .then(response => {
         console.log({ response });
         if (response.status === 200) {
@@ -120,7 +125,7 @@ class App extends Component {
           });
         }
 
-        console.log("status: ", this.state.submitEndMessage);
+        // console.log("status: ", this.state.submitEndMessage);
       })
       .catch(err => {
         console.log(err);
@@ -128,6 +133,7 @@ class App extends Component {
   } //handleSubmit
 
   render() {
+    console.log("environment: ", process.env.NODE_ENV);
     if (this.state.submitStatus === "completed") {
       return (
         <center>

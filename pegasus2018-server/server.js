@@ -10,26 +10,20 @@ const emailClient = require("./utils/email-client");
 const { authenticate } = require("./utils/authenticate");
 const { Proposal } = require("./models/proposal");
 
-const mongoose = require("mongoose");
-mongoose.Promise = global.Promise;
-mongoose.connect(
-  process.env.DB2,
-  () => console.log("mongoose connected")
-);
-
 const port = process.env.PORT || 8081;
 var app = express();
-app.use(cors({ origin: "*" }));
-// app.all("/", function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//   next();
-// });
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(port, () => {
-  console.log(`Server is up on port ${port}`);
+  console.log(
+    `Server is up on port ${port}.  Environment: ${process.env.NODE_ENV}`
+  );
 });
+
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.DB2);
 
 app.use(express.static("./public"));
 
@@ -104,7 +98,7 @@ app.post("/submit", (req, res) => {
                 console.log({ result });
                 emailClient
                   .sendEmail(result)
-                  .then(res.send("ok"))
+                  .then(res.send("done! email sent"))
                   .catch(err => {
                     res.statusMessage =
                       "Sorry, an error was encountered while saving your application (Email Client): " +

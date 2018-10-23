@@ -9,6 +9,7 @@ var uploadLocal = (req, res) => {
       filename: function(req, file, cb) {
         //figure out if there's more than one investigator, if there is take the 1st of the array as the last name
         let lastName = "";
+
         Array.isArray(req.body.lastName)
           ? (lastName = req.body.lastName[0])
           : (lastName = req.body.lastName);
@@ -34,6 +35,7 @@ var uploadLocal = (req, res) => {
         reject("Multer error uploading to local storage: ", err);
       } else {
         console.log("files in Multer", req.files);
+        console.log("request body: ", req.body);
         if (
           req.files.uploadProposal[0].mimetype != "application/pdf" ||
           req.files.uploadBudget[0].mimetype != "application/pdf"
