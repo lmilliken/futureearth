@@ -25,6 +25,31 @@ app.listen(port, () => {
 
 app.use(express.static("./public"));
 
+app.post("/reviewers/addReview", authenticate, (req, res) => {
+  console.log(req.body);
+  console.log(req.Reviewer.ContactKey);
+  mongoClient
+    .addReview(req)
+    .then(res.send("this is working"))
+    .catch(err => {
+      res.statusMessage =
+        "Sorry, an error was encountered while saving your application (Email Client): " +
+        err;
+      res.status(400).end();
+    });
+});
+
+app.get("/reviewers/completed", authenticate, (req, res) => {
+  mongoClient
+    .getCompletedReviews(req.Reviewer.ContactKey)
+    .then(applications => {
+      res.send({
+        applications
+      });
+    })
+    .catch();
+});
+
 app.get("/reviewers/assigned", authenticate, (req, res) => {
   console.log("new request: ", req);
   mongoClient

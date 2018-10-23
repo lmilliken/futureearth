@@ -1,9 +1,40 @@
 var MongoClient = require("mongodb");
+var MongoClient = require("mongodb");
 var ObjectId = require("mongodb").ObjectID;
 
 let parentFtpDirectory = "http://apply.futureearth.org/pegasus2018/";
 let dbCollection = "pegasus2018-playground";
 
+addReview = (req, res) => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-reviews")
+            .update(
+              { _id: ObjectId(req.body._id) },
+              {
+                idReviewer: req.Reviewer.ContactKey,
+                ...req.body,
+                time: Date.now()
+              },
+              {
+                upsert: true
+              }
+            )
+            .then(returnedStuff => {
+              console.log("returned", returnedStuff);
+              resolve({ returnedStuff });
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
 let saveAssignment = req => {
   return new Promise((resolve, reject) => {
     console.log("assigned reviewers: ", req.body.reviewers);
@@ -189,11 +220,36 @@ const getAssignedReviews = key => {
   });
 };
 
+const getCompletedReviews = contactKey => {
+  return new Promise((resolve, reject) => {
+    MongoClient.connect(
+      process.env.DB,
+      { useNewUrlParser: true },
+      function(err, client) {
+        if (err) {
+          reject("Could not connect to MongoDB: ", err);
+        } else {
+          var db = client.db("fcc-lxm");
+          db.collection("pegasus2018-reviews")
+            .find({ idReviewer: contactKey })
+            .toArray()
+            .then(applications => {
+              console.log({ applications });
+              resolve(applications);
+            });
+        }
+      }
+    ); //MongoClient
+  });
+};
+
 module.exports = {
   saveToDB,
   getProposals,
   getReviewers,
   saveAssignment,
   findUser,
-  getAssignedReviews
+  getAssignedReviews,
+  getCompletedReviews,
+  addReview
 };

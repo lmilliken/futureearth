@@ -3,48 +3,56 @@ import React, { Component } from "react";
 class RecommendationRow extends Component {
   constructor(props) {
     super(props);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(e) {
+    this.props.handleRadio(e.target.name, e.target.value);
   }
 
   render() {
     return (
-      <table class="table table-striped">
+      <table className="table table-striped">
         <thead>
           <tr>
-            <th class="">Recommendation</th>
-            <th class="">Highly recommend</th>
-            <th class="">Recommend</th>
-            <th class="">Do not recommend</th>
+            <th>Recommendation</th>
+            <th>Highly recommend</th>
+            <th>Recommend</th>
+            <th>Do not recommend</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="odd">
-            <td class="">Would you recommend this proposal for funding?</td>
-            <td class="">
+          <tr className="odd">
+            <td>Would you recommend this proposal for funding?</td>
+            <td>
               <input
                 required
                 type="radio"
                 id="recommendation"
                 name="recommendation"
                 value="3"
-                class="form-radio"
+                className="form-radio"
+                onClick={this.handleClick}
               />
             </td>
-            <td class="">
+            <td>
               <input
                 type="radio"
                 id="recommendation"
                 name="recommendation"
                 value="1"
-                class="form-radio"
+                className="form-radio"
+                onClick={this.handleClick}
               />
             </td>
-            <td class="">
+            <td>
               <input
                 type="radio"
                 id="recommendation"
                 name="recommendation"
                 value="0"
-                class="form-radio"
+                className="form-radio"
+                onClick={this.handleClick}
               />
             </td>
           </tr>

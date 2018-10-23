@@ -26,7 +26,7 @@ class CriteriaRow extends Component {
 
     return (
       <tr>
-        <td class="">{this.props.text}</td>
+        <td>{this.props.text}</td>
         {radiobuttons}
       </tr>
     );
