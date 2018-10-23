@@ -12,7 +12,10 @@ const { Proposal } = require("./models/proposal");
 
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.DB);
+mongoose.connect(
+  process.env.DB2,
+  () => console.log("mongoose connected")
+);
 
 const port = process.env.PORT || 8081;
 var app = express();
@@ -93,13 +96,21 @@ app.post("/submit", (req, res) => {
       } else {
         ftpClient
           .upload(req)
-          .then(message => {
-            console.log({ message });
+          .then(() => {
             let thisProposal = new Proposal();
             thisProposal
               .parseAndSave(req)
               .then(result => {
-                res.send("this is working");
+                console.log({ result });
+                emailClient
+                  .sendEmail(result)
+                  .then(res.send("ok"))
+                  .catch(err => {
+                    res.statusMessage =
+                      "Sorry, an error was encountered while saving your application (Email Client): " +
+                      err;
+                    res.status(400).end();
+                  });
               })
               .catch(err => {
                 res.statusMessage =
@@ -107,26 +118,6 @@ app.post("/submit", (req, res) => {
                   err;
                 res.status(400).end();
               });
-            // let thisProposal = new Proposal();
-            // thisProposal
-            //   .parseAndSave(req)
-            //   .then(result => {
-            //     emailClient
-            //       .sendEmail(result.returned.ops[0])
-            //       .then(res.send("ok"))
-            //       .catch(err => {
-            //         res.statusMessage =
-            //           "Sorry, an error was encountered while saving your application (Email Client): " +
-            //           err;
-            //         res.status(400).end();
-            //       });
-            //   })
-            //   .catch(err => {
-            //     res.statusMessage =
-            //       "Sorry, an error was encountered while saving your application (Mongo): " +
-            //       err;
-            //     res.status(400).end();
-            //   });
           })
           .catch(err => {
             res.statusMessage =

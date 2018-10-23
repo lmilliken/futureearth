@@ -62,20 +62,30 @@ let ProposalSchema = new mongoose.Schema({
 });
 
 ProposalSchema.methods.parseAndSave = function(req) {
-  console.log("in proposal save");
+  let parentFtpDirectory = process.env.parentFtpDirectory;
+
   let proposal = this;
-  proposal = {
-    title: req.body.title,
-    investigators: [],
-    proposalName: req.files.uploadProposal[0].originalname,
-    budgetName: req.files.uploadBudget[0].originalname,
-    linkToProposal: parentFtpDirectory + req.files.uploadProposal[0].filename,
-    linkToBudget: parentFtpDirectory + req.files.uploadBudget[0].filename,
-    agreed: Date.now()
-  };
+
+  proposal.title = req.body.title;
+  proposal.proposalName = req.files.uploadProposal[0].originalname;
+  proposal.budgetName = req.files.uploadBudget[0].originalname;
+  proposal.proposalLink =
+    parentFtpDirectory + req.files.uploadProposal[0].filename;
+  proposal.budgetLink = parentFtpDirectory + req.files.uploadBudget[0].filename;
+  proposal.agreed = Date.now();
+
+  // proposal = {
+  //   title: req.body.title,
+  //   investigators: [],
+  //   proposalName: req.files.uploadProposal[0].originalname,
+  //   budgetName: req.files.uploadBudget[0].originalname,
+  //   proposalLink: parentFtpDirectory + req.files.uploadProposal[0].filename,
+  //   budgetLink: parentFtpDirectory + req.files.uploadBudget[0].filename,
+  //   agreed: Date.now()
+  // };
 
   //maybe clean up
-  if (req.body.firstName.isArray) {
+  if (Array.isArray(req.body.firstName)) {
     //map instead? not really since
     for (i = 0; i < req.body.firstName.length; i++) {
       proposal.investigators.push({
@@ -97,7 +107,7 @@ ProposalSchema.methods.parseAndSave = function(req) {
       countryWork: req.body.countryWork
     });
   }
-
+  console.log({ proposal });
   return proposal.save();
 };
 
