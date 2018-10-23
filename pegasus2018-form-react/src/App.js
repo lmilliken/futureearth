@@ -91,19 +91,19 @@ class App extends Component {
 
   handleSubmit(event) {
     //"https://pegasus2018-server.herokuapp.com/submit"  "http://localhost:8081/submit"
+    event.preventDefault();
     this.setState({ submitStatus: "pending" });
 
-    event.preventDefault();
     console.log("submit!");
     const data = new FormData(event.target);
     ///check if investigators is array or a single person
-    console.log(data);
+    console.log("data: ", event.target);
     fetch("http://localhost:8081/submit", {
       method: "POST",
       body: data
     })
       .then(response => {
-        console.log(response);
+        console.log({ response });
         if (response.status === 200) {
           this.setState({ submitStatus: "completed" });
         } else if (response.status === 400) {

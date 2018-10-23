@@ -8,6 +8,11 @@ const ftpClient = require("./utils/ftp-client");
 const mongoClient = require("./utils/mongo-client");
 const emailClient = require("./utils/email-client");
 const { authenticate } = require("./utils/authenticate");
+const { Proposal } = require("./models/proposal");
+
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.DB);
 
 const port = process.env.PORT || 8081;
 var app = express();
@@ -88,19 +93,13 @@ app.post("/submit", (req, res) => {
       } else {
         ftpClient
           .upload(req)
-          .then(() => {
-            mongoClient
-              .saveToDB(req)
+          .then(message => {
+            console.log({ message });
+            let thisProposal = new Proposal();
+            thisProposal
+              .parseAndSave(req)
               .then(result => {
-                emailClient
-                  .sendEmail(result.returned.ops[0])
-                  .then(res.send("ok"))
-                  .catch(err => {
-                    res.statusMessage =
-                      "Sorry, an error was encountered while saving your application (Email Client): " +
-                      err;
-                    res.status(400).end();
-                  });
+                res.send("this is working");
               })
               .catch(err => {
                 res.statusMessage =
@@ -108,6 +107,26 @@ app.post("/submit", (req, res) => {
                   err;
                 res.status(400).end();
               });
+            // let thisProposal = new Proposal();
+            // thisProposal
+            //   .parseAndSave(req)
+            //   .then(result => {
+            //     emailClient
+            //       .sendEmail(result.returned.ops[0])
+            //       .then(res.send("ok"))
+            //       .catch(err => {
+            //         res.statusMessage =
+            //           "Sorry, an error was encountered while saving your application (Email Client): " +
+            //           err;
+            //         res.status(400).end();
+            //       });
+            //   })
+            //   .catch(err => {
+            //     res.statusMessage =
+            //       "Sorry, an error was encountered while saving your application (Mongo): " +
+            //       err;
+            //     res.status(400).end();
+            //   });
           })
           .catch(err => {
             res.statusMessage =

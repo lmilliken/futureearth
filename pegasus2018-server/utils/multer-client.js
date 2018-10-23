@@ -2,7 +2,6 @@ const multer = require("multer");
 const path = require("path");
 
 var uploadLocal = (req, res) => {
-  console.log("body", req.body);
   return new Promise((resolve, reject) => {
     //Set Storage Enginee
     const storage = multer.diskStorage({
@@ -10,7 +9,7 @@ var uploadLocal = (req, res) => {
       filename: function(req, file, cb) {
         //figure out if there's more than one investigator, if there is take the 1st of the array as the last name
         let lastName = "";
-        req.body.lastName.isArray
+        Array.isArray(req.body.lastName)
           ? (lastName = req.body.lastName[0])
           : (lastName = req.body.lastName);
 
