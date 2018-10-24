@@ -3,9 +3,7 @@ import "./App.css";
 import axios from "axios";
 import ProposalRow from "./components/ProposalRow";
 import ProposalModal from "./components/ProposalModal";
-// const config = require("./config.js");
 
-console.log("process.env.NODE_ENV: ", process.env.NODE_ENV);
 let SERVER_URL = "http://localhost:8081";
 // process.env.NODE_ENV === "production"
 //   ? "https://pegasus2018-server.herokuapp.com"
@@ -28,10 +26,8 @@ class App extends Component {
   }
 
   async componentWillMount() {
-    const data = await this.getProposals();
-    console.log("SERVER_URL from process.env.NODE_ENV", SERVER_URL);
-    console.log({ data });
-    this.setState({ proposals: data.data.returnedStuff });
+    const proposals = await this.getProposals();
+    this.setState({ proposals });
     const reviewers = await this.getReviewers();
     this.setState({ reviewersAll: reviewers });
   }
@@ -39,7 +35,7 @@ class App extends Component {
   async getProposals() {
     return axios
       .get(`${SERVER_URL}/proposals`)
-      .then(res => res)
+      .then(res => res.data)
       .catch(err => console.log(err));
   }
   //"http://localhost:8081/reviewers"
@@ -47,7 +43,7 @@ class App extends Component {
   async getReviewers() {
     return axios
       .get(`${SERVER_URL}/reviewers`)
-      .then(res => res.data.reviewers)
+      .then(res => res.data)
       .catch(err => console.log(err));
   }
 
@@ -71,30 +67,29 @@ class App extends Component {
     this.setState({ displayModal: false }, () => {});
   }
 
-  async handleSave(reviewers, tags, notes) {
-    console.log("in async handle save");
-
+  handleSave(reviewers, tags, notes) {
     this.saveProposal(this.state.selected._id, reviewers, tags, notes);
   }
 
-  saveProposal(id, reviewers, tags, notes) {
+  saveProposal(id, assignedReviewers, tags, notes) {
     return axios
       .post(`http://localhost:8081/adminupdate/${id}`, {
-        reviewers,
+        assignedReviewers,
         tags,
         notes
       })
       .then(async res => {
-        console.log(res);
-        const data = await this.getProposals();
+        console.log("here", res);
+        const proposals = await this.getProposals();
         this.setState({
-          proposals: data.data.returnedStuff,
+          proposals,
           displayModal: false
         });
       })
       .catch(err => console.log(err));
   }
   render() {
+    console.log("state: ", this.state);
     let proposals = this.state.proposals.map(aProposal => {
       return (
         <ProposalRow

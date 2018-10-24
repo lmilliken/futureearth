@@ -32,13 +32,8 @@ var upload = req => {
           }
           ftpClient.end();
           resolve(proposalFileDest, proposalFileOrigin);
-          console.log("connection ended?");
         });
       });
-    });
-
-    ftpClient.on("end", function() {
-      console.log("connection to ftpClient definitely ended");
     });
   }); //promise
 };

@@ -106,7 +106,7 @@ class App extends Component {
     // })
 
     axios
-      .post("https://pegasus2018-server.herokuapp.com/submit", data)
+      .post("http://localhost:8081/submit", data)
       .then(response => {
         console.log({ response });
         if (response.status === 200) {

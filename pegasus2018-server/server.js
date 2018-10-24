@@ -3,12 +3,14 @@ const express = require("express");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 
+const _ = require("lodash");
 const multerClient = require("./utils/multer-client");
 const ftpClient = require("./utils/ftp-client");
 const mongoClient = require("./utils/mongo-client");
 const emailClient = require("./utils/email-client");
 const { authenticate } = require("./utils/authenticate");
 const { Proposal } = require("./models/proposal");
+const { Reviewer } = require("./models/reviewer");
 
 const port = process.env.PORT || 8081;
 var app = express();
@@ -24,7 +26,6 @@ app.listen(port, () => {
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB2);
-
 app.use(express.static("./public"));
 
 app.post("/reviewers/addReview", authenticate, (req, res) => {
@@ -53,7 +54,7 @@ app.get("/reviewers/completed", authenticate, (req, res) => {
 });
 
 app.get("/reviewers/assigned", authenticate, (req, res) => {
-  console.log("new request: ", req);
+  // console.log("new request: ", req);
   mongoClient
     .getAssignedReviews(req.Reviewer.ContactKey)
     .then(applications => {
@@ -67,15 +68,25 @@ app.get("/reviewers/assigned", authenticate, (req, res) => {
 
 app.post("/adminupdate/:id", (req, res) => {
   console.log("post called", req.params.id);
-  mongoClient
-    .saveAssignment(req)
-    .then(res.send("this is working"))
-    .catch(err => {
-      res.statusMessage =
-        "Sorry, an error was encountered while saving your application (Email Client): " +
-        err;
-      res.status(400).end();
-    });
+  console.log("post called", req.body);
+  var body = _.pick(req.body, ["assignedReviewers", "tags", "notes"]);
+  Proposal.findOneAndUpdate(
+    { _id: req.params.id },
+    { $set: body },
+    { new: true }
+  ).then(updatedProposal => {
+    console.log({ updatedProposal });
+    res.send(updatedProposal);
+  });
+  // mongoClient
+  //   .saveAssignment(req)
+  //   .then(res.send("this is working"))
+  //   .catch(err => {
+  //     res.statusMessage =
+  //       "Sorry, an error was encountered while saving your application (Email Client): " +
+  //       err;
+  //     res.status(400).end();
+  //   });
 });
 
 // it's a little messy, can't do Promise.all because the next function needs output from previous function, can do async/await but need to work on try/catch blocks for them
@@ -129,14 +140,20 @@ app.post("/submit", (req, res) => {
     });
 });
 
+// app.get("/proposals", (req, res) => {
+//   mongoClient.getProposals().then(proposals => {
+//     res.send(proposals);
+//   });
+// });
+
 app.get("/proposals", (req, res) => {
-  mongoClient.getProposals().then(proposals => {
+  Proposal.find({}).then(proposals => {
     res.send(proposals);
   });
 });
 
 app.get("/reviewers", (req, res) => {
-  mongoClient.getReviewers().then(reviewers => {
+  Reviewer.find({}).then(reviewers => {
     res.send(reviewers);
   });
 });

@@ -58,7 +58,7 @@ let ProposalSchema = new mongoose.Schema({
   agreed: {},
   notes: {},
   tags: {},
-  assignedReviewers: {}
+  assignedReviewers: [{ type: mongoose.Schema.ObjectId, ref: "Reviewer" }]
 });
 
 ProposalSchema.methods.parseAndSave = function(req) {
