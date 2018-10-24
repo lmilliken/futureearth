@@ -105,7 +105,7 @@ class App extends Component {
     };
 
     return axios(options)
-      .then(res => res.data.assignedReviews)
+      .then(res => res.data)
       .catch(err => {
         console.log("there is an error", err.response);
         let errorMessage = err;

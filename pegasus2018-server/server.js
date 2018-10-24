@@ -55,15 +55,20 @@ app.get("/reviewers/completed", authenticate, (req, res) => {
 
 app.get("/reviewers/assigned", authenticate, (req, res) => {
   // console.log("new request: ", req);
-  mongoClient
-    .getAssignedReviews(req.Reviewer.ContactKey)
-    .then(applications => {
-      res.send({
-        reviewer: req.Reviewer,
-        assignedReviews: applications
-      });
-    })
-    .catch();
+  console.log("reviewer id in here: ", req.Reviewer._id);
+  Proposal.find({ assignedReviewers: req.Reviewer._id }).then(returned => {
+    console.log("returned proposals:", returned), res.send(returned);
+  });
+
+  // mongoClient
+  //   .getAssignedReviews(req.Reviewer.ContactKey)
+  //   .then(applications => {
+  //     res.send({
+  //       reviewer: req.Reviewer,
+  //       assignedReviews: applications
+  //     });
+  //   })
+  //   .catch();
 });
 
 app.post("/adminupdate/:id", (req, res) => {
