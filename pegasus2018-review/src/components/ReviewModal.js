@@ -44,7 +44,7 @@ class ReviewModal extends Component {
 
   handleSave(event) {
     event.preventDefault();
-    console.log("save", this.state);
+    console.log("save", this.state.selectedReview);
     // this.props.handleModalSave(
     //   this.state.assignedReviewers,
     //   this.state.tags,
@@ -58,7 +58,7 @@ class ReviewModal extends Component {
       },
       data: this.state.selectedReview
     })
-      .then(res => console.log(res))
+      .then(res => this.props.handleModalClose())
       .catch(err => {
         console.log(err);
       });
@@ -165,7 +165,7 @@ class ReviewModal extends Component {
             <label>Additional comments:</label>
             <textarea
               name="comments"
-              class="form-control"
+              className="form-control"
               rows="3"
               onChange={this.updateComments}
               value={this.state.comments}

@@ -11,6 +11,8 @@ class App extends Component {
     this.state = {
       statusOK: true,
       assignedProposals: [],
+      completedReviews: [],
+      incompleteReviews: [],
       selected: {},
       displayModal: false
     };
@@ -22,7 +24,9 @@ class App extends Component {
   }
 
   handleClose() {
-    this.setState({ displayModal: false }, () => {});
+    this.setState({ displayModal: false }, () => {
+      console.log("closed: ", this.state);
+    });
   }
 
   async handleSave(reviewers, tags, notes) {
@@ -47,13 +51,23 @@ class App extends Component {
 
   async componentWillMount() {
     console.log("component will mount");
-    const data = await this.getAssignedProposals();
+    const assigned = await this.getAssignedProposals();
     const completed = await this.getCompletedReviews();
+
+    //create an array of all of the proposal IDs assigned
+    const completedIDs = completed.map(proposal => proposal.idProposal);
+    //filter by proposals that
+    const incompletes = assigned.filter(
+      proposal => !completedIDs.includes(proposal._id)
+    );
+
     this.setState(
-      { assignedProposals: data, completedReviews: completed },
+      {
+        assignedProposals: assigned,
+        completedReviews: completed,
+        incompleteReviews: incompletes
+      },
       () => {
-        // array1.filter(value => -1 !== array2.indexOf(value));
-        // const completed =  this.state.assignedProposals.filter(proposal=> -1 !==)
         console.log("state: ", this.state);
       }
     );
@@ -71,7 +85,7 @@ class App extends Component {
     };
 
     return axios(options)
-      .then(res => res.data.applications)
+      .then(res => res.data.reviews)
       .catch(err => {
         console.log("there is an error", err.response);
         let errorMessage = err;
@@ -127,12 +141,23 @@ class App extends Component {
   }
 
   render() {
+    // console.log("state at render: ", this.state);
     if (this.state.statusOK === false) {
       return (
         <p className="error-message">{this.state.statusMessage.toString()}</p>
       );
     } else {
-      let incompleteProposals = this.state.assignedProposals.map(aProposal => {
+      let incompleteReviews = this.state.incompleteReviews.map(aProposal => {
+        return (
+          <ProposalRow
+            {...aProposal}
+            key={aProposal._id}
+            ahandleRowClick={() => this.handleRowClick(aProposal._id)}
+          />
+        );
+      });
+
+      let completedReviews = this.state.completedReviews.map(aProposal => {
         return (
           <ProposalRow
             {...aProposal}
@@ -153,17 +178,8 @@ class App extends Component {
                 <th className="text-left">Tags</th>
               </tr>
             </thead>
-            <tbody>{incompleteProposals}</tbody>
+            <tbody>{incompleteReviews}</tbody>
           </table>
-
-          {this.state.displayModal === true && (
-            <ReviewModal
-              {...this.state.selected}
-              key={this.state.selected._id}
-              handleModalClose={this.handleClose}
-              handleModalSave={this.handleSave}
-            />
-          )}
 
           <p>Completed Reviews</p>
           <table className="table table-hover">
@@ -174,7 +190,7 @@ class App extends Component {
                 <th className="text-left">Tags</th>
               </tr>
             </thead>
-            <tbody>{incompleteProposals}</tbody>
+            <tbody>{completedReviews}</tbody>
           </table>
 
           {this.state.displayModal === true && (

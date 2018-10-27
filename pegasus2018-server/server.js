@@ -11,6 +11,8 @@ const emailClient = require("./utils/email-client");
 const { authenticate } = require("./utils/authenticate");
 const { Proposal } = require("./models/proposal");
 const { Reviewer } = require("./models/reviewer");
+const { Review } = require("./models/review");
+const { ObjectID } = require("mongodb");
 
 const port = process.env.PORT || 8081;
 var app = express();
@@ -29,25 +31,36 @@ mongoose.connect(process.env.DB2);
 app.use(express.static("./public"));
 
 app.post("/reviewers/addReview", authenticate, (req, res) => {
-  console.log(req.body);
-  console.log(req.Reviewer.ContactKey);
-  mongoClient
-    .addReview(req)
-    .then(res.send("this is working"))
-    .catch(err => {
-      res.statusMessage =
-        "Sorry, an error was encountered while saving your application (Email Client): " +
-        err;
-      res.status(400).end();
-    });
+  console.log("body", req.body);
+  console.log("recommendation", req.body.recommendation);
+  var review = new Review({
+    idReviewer: req.Reviewer._id,
+    idProposal: req.body.idProposal,
+    scoreTheme: req.body.scoreTheme,
+    scoreImpact: req.body.scoreImpact,
+    scoreMission: req.body.scoreMIssion,
+    scoreDiversity: req.body.scoreDiversity,
+    scoreCost: req.body.scoreCost,
+    recommendation: req.body.recommendation,
+    comments: req.body.comments
+  });
+
+  review.save().then(
+    doc => {
+      console.log({ doc });
+      res.send(doc);
+    },
+    err => {
+      res.status(400).send(err);
+    }
+  );
 });
 
 app.get("/reviewers/completed", authenticate, (req, res) => {
-  mongoClient
-    .getCompletedReviews(req.Reviewer.ContactKey)
-    .then(applications => {
+  Review.find({ idReviewer: req.Reviewer._id })
+    .then(reviews => {
       res.send({
-        applications
+        reviews
       });
     })
     .catch();
@@ -57,7 +70,7 @@ app.get("/reviewers/assigned", authenticate, (req, res) => {
   // console.log("new request: ", req);
   console.log("reviewer id in here: ", req.Reviewer._id);
   Proposal.find({ assignedReviewers: req.Reviewer._id }).then(returned => {
-    console.log("returned proposals:", returned), res.send(returned);
+    res.send(returned);
   });
 
   // mongoClient

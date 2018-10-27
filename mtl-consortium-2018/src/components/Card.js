@@ -43,13 +43,13 @@ class Card extends Component {
             {this.props.INST_NAME}
           </h3>
           <p className="card-text">
-            <strong>Lead: </strong>
+            <strong>Institution: </strong>
             {this.props.LEAD_INST}
             <br />
-            <strong>Keywords: </strong>
+            <strong>Mots clés: </strong>
             {this.props.KEYWORDS}
             <br />
-            <strong>Themes: </strong>
+            <strong>Thèmes: </strong>
             {themesList.join(", ")}
           </p>
           <a href={this.props.LINK} target="_blank" className="card-link">
