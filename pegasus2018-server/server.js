@@ -30,10 +30,14 @@ mongoose.Promise = global.Promise;
 mongoose.connect(process.env.DB2);
 app.use(express.static("./public"));
 
-app.post("/reviewers/addReview", authenticate, (req, res) => {
-  console.log("body", req.body);
-  console.log("recommendation", req.body.recommendation);
-  var review = new Review({
+app.post("/reviewers/addReview/:id", authenticate, (req, res) => {
+  console.log("here");
+  const idReview = req.params.id;
+  console.log("here");
+  console.log({ idReview });
+  // console.log("body", req.body);
+  // console.log("recommendation", req.body.recommendation);
+  var review = {
     idReviewer: req.Reviewer._id,
     idProposal: req.body.idProposal,
     scoreTheme: req.body.scoreTheme,
@@ -43,14 +47,18 @@ app.post("/reviewers/addReview", authenticate, (req, res) => {
     scoreCost: req.body.scoreCost,
     recommendation: req.body.recommendation,
     comments: req.body.comments
-  });
+  };
 
-  review.save().then(
+  Review.findOneAndUpdate({ _id: idReview }, review, {
+    upsert: true,
+    new: true
+  }).then(
     doc => {
       console.log({ doc });
       res.send(doc);
     },
     err => {
+      console.log("error in saving", err);
       res.status(400).send(err);
     }
   );
@@ -58,6 +66,7 @@ app.post("/reviewers/addReview", authenticate, (req, res) => {
 
 app.get("/reviewers/completed", authenticate, (req, res) => {
   Review.find({ idReviewer: req.Reviewer._id })
+    .populate("idProposal")
     .then(reviews => {
       res.send({
         reviews

@@ -12,8 +12,8 @@ class ReviewModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedProposal: this.props,
-      selectedReview: {}
+      selectedProposal: this.props.proposal,
+      selectedReview: this.props.review
     };
 
     this.handleSave = this.handleSave.bind(this);
@@ -30,9 +30,12 @@ class ReviewModal extends Component {
   }
 
   handleRadio(name, value) {
+    console.log("getting called", name, value);
     let tempSelectedReview = { ...this.state.selectedReview };
     tempSelectedReview[name] = value;
-    this.setState({ selectedReview: tempSelectedReview });
+    this.setState({ selectedReview: tempSelectedReview }, () => {
+      console.log("new state: ", this.state.selectedReview);
+    });
   }
 
   getCookieValue(cookieName) {
@@ -52,7 +55,9 @@ class ReviewModal extends Component {
     // );
     axios({
       method: "POST",
-      url: "http://localhost:8081/reviewers/addReview",
+      url: `http://localhost:8081/reviewers/addReview/${
+        this.state.selectedReview._id
+      }`,
       headers: {
         HLAuthToken: this.getCookieValue("HLAuthToken") || temp.token
       },
@@ -72,7 +77,7 @@ class ReviewModal extends Component {
 
   componentWillMount() {
     let tempSelectedReview = { ...this.state.selectedReview };
-    tempSelectedReview.idProposal = this.props._id;
+    tempSelectedReview.idProposal = this.state.selectedProposal._id;
     this.setState({ selectedReview: tempSelectedReview });
   }
 
@@ -89,6 +94,7 @@ class ReviewModal extends Component {
   }
 
   render() {
+    console.log("modal state: ", this.state);
     const criteria = [
       {
         name: "scoreTheme",
@@ -117,8 +123,10 @@ class ReviewModal extends Component {
     ];
 
     const criteriaRows = criteria.map(aCriterion => {
+      // console.log(aCriterion.name, this.state.selectedReview[aCriterion.name]);
       return (
         <CriteriaRow
+          scoreValue={this.state.selectedReview[aCriterion.name]}
           key={aCriterion.name}
           handleRadio={this.handleRadio}
           {...aCriterion}

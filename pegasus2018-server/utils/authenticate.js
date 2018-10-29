@@ -28,7 +28,7 @@ var authenticate = async (req, res, next) => {
             res.status(401).send();
           }
           req.Reviewer._id = confirmedUser[0]._id;
-          // console.log("reviewer: ", req.Reviewer._id);
+          console.log("reviewer: ", req.Reviewer._id);
           next();
         })
         .catch(err => {

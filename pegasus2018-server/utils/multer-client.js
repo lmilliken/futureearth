@@ -9,7 +9,7 @@ var uploadLocal = (req, res) => {
       filename: function(req, file, cb) {
         //figure out if there's more than one investigator, if there is take the 1st of the array as the last name
         let lastName = "";
-
+        console.log("last name,", req.body.lastName);
         Array.isArray(req.body.lastName)
           ? (lastName = req.body.lastName[0])
           : (lastName = req.body.lastName);

@@ -13,7 +13,8 @@ class App extends Component {
       assignedProposals: [],
       completedReviews: [],
       incompleteReviews: [],
-      selected: {},
+      selectedProposal: {},
+      selectedReview: {},
       displayModal: false
     };
     this.getAssignedProposals = this.getAssignedProposals.bind(this);
@@ -38,10 +39,15 @@ class App extends Component {
       proposal => proposal._id === id
     );
 
+    let selectedReview = this.state.completedReviews.filter(
+      proposal => proposal.idProposal._id === id
+    );
+
     this.setState(
       {
         displayModal: true,
-        selected: selectedProposal[0]
+        selectedProposal: selectedProposal[0],
+        selectedReview: selectedReview[0]
       },
       () => {
         console.log("state after click: ", this.state);
@@ -53,11 +59,16 @@ class App extends Component {
     console.log("component will mount");
     const assigned = await this.getAssignedProposals();
     const completed = await this.getCompletedReviews();
-
+    console.log({ assigned });
+    console.log({ completed });
     //create an array of all of the proposal IDs assigned
-    const completedIDs = completed.map(proposal => proposal.idProposal);
+    let completedIDs = [];
+    if (completed) {
+      completedIDs = completed.map(proposal => proposal.idProposal._id);
+    }
     //filter by proposals that
-    const incompletes = assigned.filter(
+    let incompletes = [];
+    incompletes = assigned.filter(
       proposal => !completedIDs.includes(proposal._id)
     );
 
@@ -141,8 +152,8 @@ class App extends Component {
   }
 
   render() {
-    // console.log("state at render: ", this.state);
-    if (this.state.statusOK === false) {
+    console.log("state at render: ", this.state);
+    if (this.state.statusOK == false) {
       return (
         <p className="error-message">{this.state.statusMessage.toString()}</p>
       );
@@ -161,8 +172,11 @@ class App extends Component {
         return (
           <ProposalRow
             {...aProposal}
+            {...aProposal.idProposal}
             key={aProposal._id}
-            ahandleRowClick={() => this.handleRowClick(aProposal._id)}
+            ahandleRowClick={() =>
+              this.handleRowClick(aProposal.idProposal._id)
+            }
           />
         );
       });
@@ -195,8 +209,9 @@ class App extends Component {
 
           {this.state.displayModal === true && (
             <ReviewModal
-              {...this.state.selected}
-              key={this.state.selected._id}
+              proposal={this.state.selectedProposal}
+              review={this.state.selectedReview}
+              key={this.state.selectedProposal._id}
               handleModalClose={this.handleClose}
               handleModalSave={this.handleSave}
             />
