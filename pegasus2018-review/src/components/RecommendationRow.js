@@ -11,6 +11,7 @@ class RecommendationRow extends Component {
   }
 
   render() {
+    // console.log("recommendation score: ", this.props.scoreRec);
     return (
       <table className="table table-striped">
         <thead>
@@ -26,12 +27,12 @@ class RecommendationRow extends Component {
             <td>Would you recommend this proposal for funding?</td>
             <td>
               <input
-                required
                 type="radio"
                 id="recommendation"
                 name="recommendation"
                 value="3"
                 className="form-radio"
+                checked={this.props.scoreRec == 3}
                 onClick={this.handleClick}
               />
             </td>
@@ -42,6 +43,7 @@ class RecommendationRow extends Component {
                 name="recommendation"
                 value="1"
                 className="form-radio"
+                checked={this.props.scoreRec == 1}
                 onClick={this.handleClick}
               />
             </td>
@@ -52,6 +54,7 @@ class RecommendationRow extends Component {
                 name="recommendation"
                 value="0"
                 className="form-radio"
+                checked={this.props.scoreRec == 0}
                 onClick={this.handleClick}
               />
             </td>

@@ -31,25 +31,19 @@ mongoose.connect(process.env.DB2);
 app.use(express.static("./public"));
 
 app.post("/reviewers/addReview/:id", authenticate, (req, res) => {
-  console.log("here");
-  const idReview = req.params.id;
-  console.log("here");
-  console.log({ idReview });
-  // console.log("body", req.body);
-  // console.log("recommendation", req.body.recommendation);
   var review = {
     idReviewer: req.Reviewer._id,
     idProposal: req.body.idProposal,
     scoreTheme: req.body.scoreTheme,
     scoreImpact: req.body.scoreImpact,
-    scoreMission: req.body.scoreMIssion,
+    scoreMission: req.body.scoreMission,
     scoreDiversity: req.body.scoreDiversity,
     scoreCost: req.body.scoreCost,
     recommendation: req.body.recommendation,
     comments: req.body.comments
   };
 
-  Review.findOneAndUpdate({ _id: idReview }, review, {
+  Review.findOneAndUpdate({ _id: req.params._id }, review, {
     upsert: true,
     new: true
   }).then(

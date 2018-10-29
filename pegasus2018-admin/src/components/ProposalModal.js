@@ -109,6 +109,7 @@ class ProposalModal extends Component {
   }
 
   render() {
+    console.log("props ", this.props);
     // let investigators = this.props.investigators.map(inv => {
     //   return (
     // <div>
@@ -231,11 +232,11 @@ class ProposalModal extends Component {
             </p>
           </div>
           <center>
-            <a target="_blank" href={this.props.linkToProposal}>
+            <a target="_blank" href={this.props.proposalLink}>
               Proposal
             </a>{" "}
             -{" "}
-            <a target="_blank" href={this.props.linkToBudget}>
+            <a target="_blank" href={this.props.budgetLink}>
               Budget
             </a>
           </center>

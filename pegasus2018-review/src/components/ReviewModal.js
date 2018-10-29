@@ -26,7 +26,9 @@ class ReviewModal extends Component {
   updateComments(e) {
     let tempSelectedReview = { ...this.state.selectedReview };
     tempSelectedReview.comments = e.target.value;
-    this.setState({ selectedReview: tempSelectedReview });
+    this.setState({ selectedReview: tempSelectedReview }, () => {
+      // console.log("new commends: ", this.state.selectedReview.comments);
+    });
   }
 
   handleRadio(name, value) {
@@ -34,7 +36,7 @@ class ReviewModal extends Component {
     let tempSelectedReview = { ...this.state.selectedReview };
     tempSelectedReview[name] = value;
     this.setState({ selectedReview: tempSelectedReview }, () => {
-      console.log("new state: ", this.state.selectedReview);
+      // console.log("new state: ", this.state.selectedReview);
     });
   }
 
@@ -63,7 +65,7 @@ class ReviewModal extends Component {
       },
       data: this.state.selectedReview
     })
-      .then(res => this.props.handleModalClose())
+      .then(res => this.props.handleModalSave())
       .catch(err => {
         console.log(err);
       });
@@ -94,7 +96,7 @@ class ReviewModal extends Component {
   }
 
   render() {
-    console.log("modal state: ", this.state);
+    // console.log("modal state: ", this.state.selectedReview.recommendation);
     const criteria = [
       {
         name: "scoreTheme",
@@ -169,14 +171,17 @@ class ReviewModal extends Component {
               </thead>
               <tbody>{criteriaRows}</tbody>
             </table>
-            <RecommendationRow handleRadio={this.handleRadio} />
+            <RecommendationRow
+              handleRadio={this.handleRadio}
+              scoreRec={this.state.selectedReview.recommendation}
+            />
             <label>Additional comments:</label>
             <textarea
               name="comments"
               className="form-control"
               rows="3"
               onChange={this.updateComments}
-              value={this.state.comments}
+              value={this.state.selectedReview.comments}
             />
           </Modal.Body>
 

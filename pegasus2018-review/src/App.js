@@ -30,8 +30,9 @@ class App extends Component {
     });
   }
 
-  async handleSave(reviewers, tags, notes) {
+  handleSave() {
     this.setState({ displayModal: false }, () => {});
+    this.refreshAppState();
   }
 
   handleRowClick(id) {
@@ -55,12 +56,15 @@ class App extends Component {
     );
   }
 
-  async componentWillMount() {
-    console.log("component will mount");
+  componentWillMount() {
+    this.refreshAppState();
+  }
+
+  async refreshAppState() {
     const assigned = await this.getAssignedProposals();
     const completed = await this.getCompletedReviews();
-    console.log({ assigned });
-    console.log({ completed });
+    // console.log({ assigned });
+    // console.log({ completed });
     //create an array of all of the proposal IDs assigned
     let completedIDs = [];
     if (completed) {
@@ -79,13 +83,13 @@ class App extends Component {
         incompleteReviews: incompletes
       },
       () => {
-        console.log("state: ", this.state);
+        console.log("state refresh: ", this.state);
       }
     );
   }
 
   async getCompletedReviews() {
-    console.log("token: ", this.getCookieValue("HLAuthToken"));
+    // console.log("token: ", this.getCookieValue("HLAuthToken"));
 
     const options = {
       method: "GET",
@@ -119,7 +123,7 @@ class App extends Component {
     //   });
     // }
 
-    console.log("token: ", this.getCookieValue("HLAuthToken"));
+    // console.log("token: ", this.getCookieValue("HLAuthToken"));
 
     const options = {
       method: "GET",
@@ -152,7 +156,7 @@ class App extends Component {
   }
 
   render() {
-    console.log("state at render: ", this.state);
+    // console.log("state at render: ", this.state);
     if (this.state.statusOK == false) {
       return (
         <p className="error-message">{this.state.statusMessage.toString()}</p>
