@@ -62,10 +62,10 @@ let sendEmail = requestObject => {
         `<p><strong>Title</strong>: ${requestObject.title}</p>` +
         `<p><strong>Investigators</strong>:</p>` +
         investigatorsList +
-        `Proposal:  <a href="${requestObject.linkToProposal}">${
+        `Proposal:  <a href="${requestObject.proposalLink}">${
           requestObject.proposalName
         }</a>` +
-        `<br>Budget:  <a href="${requestObject.linkToBudget}">${
+        `<br>Budget:  <a href="${requestObject.budgetLink}">${
           requestObject.budgetName
         }</a>`
     };

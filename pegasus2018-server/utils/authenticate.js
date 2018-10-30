@@ -1,7 +1,9 @@
 const axios = require("axios");
 const mongoClient = require("./mongo-client");
+const { Reviewer } = require("./../models/reviewer");
 
 var authenticate = async (req, res, next) => {
+  console.log("params id", req.params.id);
   var authOptions = {
     method: "GET",
     url: "https://api.connectedcommunity.org/api/v2.0/Contacts/GetWhoAmI",
@@ -15,20 +17,19 @@ var authenticate = async (req, res, next) => {
 
   axios(authOptions)
     .then(returned => {
-      console.log("axios call to HL successfull ", returned);
+      console.log("axios call to HL successfull ");
       //error code 422? look into this 500s: when express server crashes, 400s: "client" error
       req.Reviewer = returned.data;
       req.FirstName = returned.data.FirstName;
       req.LastName = returned.data.LastName;
-
-      mongoClient
-        .findUser(req.Reviewer.ContactKey)
+      Reviewer.find({ HLContactKey: req.Reviewer.ContactKey })
         .then(confirmedUser => {
           if (confirmedUser.length < 1) {
             res.statusMessage = "You are not authorized to view this page";
             res.status(401).send();
           }
-
+          req.Reviewer._id = confirmedUser[0]._id;
+          console.log("reviewer: ", req.Reviewer._id);
           next();
         })
         .catch(err => {

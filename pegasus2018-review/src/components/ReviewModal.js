@@ -12,8 +12,8 @@ class ReviewModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedProposal: this.props,
-      selectedReview: {}
+      selectedProposal: this.props.proposal,
+      selectedReview: this.props.review
     };
 
     this.handleSave = this.handleSave.bind(this);
@@ -26,13 +26,18 @@ class ReviewModal extends Component {
   updateComments(e) {
     let tempSelectedReview = { ...this.state.selectedReview };
     tempSelectedReview.comments = e.target.value;
-    this.setState({ selectedReview: tempSelectedReview });
+    this.setState({ selectedReview: tempSelectedReview }, () => {
+      // console.log("new commends: ", this.state.selectedReview.comments);
+    });
   }
 
   handleRadio(name, value) {
+    console.log("getting called", name, value);
     let tempSelectedReview = { ...this.state.selectedReview };
     tempSelectedReview[name] = value;
-    this.setState({ selectedReview: tempSelectedReview });
+    this.setState({ selectedReview: tempSelectedReview }, () => {
+      // console.log("new state: ", this.state.selectedReview);
+    });
   }
 
   getCookieValue(cookieName) {
@@ -50,15 +55,24 @@ class ReviewModal extends Component {
     //   this.state.tags,
     //   this.state.notes
     // );
+
+    console.log(
+      "url: ",
+      `http://localhost:8081/reviewers/addReview/${
+        this.state.selectedReview._id
+      }`
+    );
     axios({
       method: "POST",
-      url: "http://localhost:8081/reviewers/addReview",
+      url: `http://localhost:8081/reviewers/addReview/${
+        this.state.selectedReview._id
+      }`,
       headers: {
         HLAuthToken: this.getCookieValue("HLAuthToken") || temp.token
       },
       data: this.state.selectedReview
     })
-      .then(res => console.log(res))
+      .then(res => this.props.handleModalSave())
       .catch(err => {
         console.log(err);
       });
@@ -72,7 +86,7 @@ class ReviewModal extends Component {
 
   componentWillMount() {
     let tempSelectedReview = { ...this.state.selectedReview };
-    tempSelectedReview.idProposal = this.props._id;
+    tempSelectedReview.idProposal = this.state.selectedProposal._id;
     this.setState({ selectedReview: tempSelectedReview });
   }
 
@@ -89,6 +103,7 @@ class ReviewModal extends Component {
   }
 
   render() {
+    console.log("modal state: ", this.state.selectedProposal);
     const criteria = [
       {
         name: "scoreTheme",
@@ -117,8 +132,10 @@ class ReviewModal extends Component {
     ];
 
     const criteriaRows = criteria.map(aCriterion => {
+      // console.log(aCriterion.name, this.state.selectedReview[aCriterion.name]);
       return (
         <CriteriaRow
+          scoreValue={this.state.selectedReview[aCriterion.name]}
           key={aCriterion.name}
           handleRadio={this.handleRadio}
           {...aCriterion}
@@ -140,11 +157,14 @@ class ReviewModal extends Component {
           <Modal.Body style={modalBody}>
             this is the modal body
             <center>
-              <a target="_blank" href={this.props.linkToProposal}>
+              <a
+                target="_blank"
+                href={this.state.selectedProposal.proposalLink}
+              >
                 Proposal
               </a>{" "}
               -{" "}
-              <a target="_blank" href={this.props.linkToBudget}>
+              <a target="_blank" href={this.state.selectedProposal.budgetLink}>
                 Budget
               </a>
             </center>
@@ -161,14 +181,17 @@ class ReviewModal extends Component {
               </thead>
               <tbody>{criteriaRows}</tbody>
             </table>
-            <RecommendationRow handleRadio={this.handleRadio} />
+            <RecommendationRow
+              handleRadio={this.handleRadio}
+              scoreRec={this.state.selectedReview.recommendation}
+            />
             <label>Additional comments:</label>
             <textarea
               name="comments"
-              class="form-control"
+              className="form-control"
               rows="3"
               onChange={this.updateComments}
-              value={this.state.comments}
+              value={this.state.selectedReview.comments}
             />
           </Modal.Body>
 

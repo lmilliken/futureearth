@@ -11,7 +11,10 @@ class App extends Component {
     this.state = {
       statusOK: true,
       assignedProposals: [],
-      selected: {},
+      completedReviews: [],
+      incompleteReviews: [],
+      selectedProposal: {},
+      selectedReview: {},
       displayModal: false
     };
     this.getAssignedProposals = this.getAssignedProposals.bind(this);
@@ -22,11 +25,14 @@ class App extends Component {
   }
 
   handleClose() {
-    this.setState({ displayModal: false }, () => {});
+    this.setState({ displayModal: false }, () => {
+      console.log("closed: ", this.state);
+    });
   }
 
-  async handleSave(reviewers, tags, notes) {
+  handleSave() {
     this.setState({ displayModal: false }, () => {});
+    this.refreshAppState();
   }
 
   handleRowClick(id) {
@@ -34,10 +40,15 @@ class App extends Component {
       proposal => proposal._id === id
     );
 
+    let selectedReview = this.state.completedReviews.filter(
+      proposal => proposal.idProposal._id === id
+    );
+
     this.setState(
       {
         displayModal: true,
-        selected: selectedProposal[0]
+        selectedProposal: selectedProposal[0],
+        selectedReview: selectedReview[0]
       },
       () => {
         console.log("state after click: ", this.state);
@@ -45,22 +56,40 @@ class App extends Component {
     );
   }
 
-  async componentWillMount() {
-    console.log("component will mount");
-    const data = await this.getAssignedProposals();
+  componentWillMount() {
+    this.refreshAppState();
+  }
+
+  async refreshAppState() {
+    const assigned = await this.getAssignedProposals();
     const completed = await this.getCompletedReviews();
+    // console.log({ assigned });
+    // console.log({ completed });
+    //create an array of all of the proposal IDs assigned
+    let completedIDs = [];
+    if (completed) {
+      completedIDs = completed.map(proposal => proposal.idProposal._id);
+    }
+    //filter by proposals that
+    let incompletes = [];
+    incompletes = assigned.filter(
+      proposal => !completedIDs.includes(proposal._id)
+    );
+
     this.setState(
-      { assignedProposals: data, completedReviews: completed },
+      {
+        assignedProposals: assigned,
+        completedReviews: completed,
+        incompleteReviews: incompletes
+      },
       () => {
-        // array1.filter(value => -1 !== array2.indexOf(value));
-        // const completed =  this.state.assignedProposals.filter(proposal=> -1 !==)
-        console.log("state: ", this.state);
+        console.log("state refresh: ", this.state);
       }
     );
   }
 
   async getCompletedReviews() {
-    console.log("token: ", this.getCookieValue("HLAuthToken"));
+    // console.log("token: ", this.getCookieValue("HLAuthToken"));
 
     const options = {
       method: "GET",
@@ -71,7 +100,7 @@ class App extends Component {
     };
 
     return axios(options)
-      .then(res => res.data.applications)
+      .then(res => res.data.reviews)
       .catch(err => {
         console.log("there is an error", err.response);
         let errorMessage = err;
@@ -94,7 +123,7 @@ class App extends Component {
     //   });
     // }
 
-    console.log("token: ", this.getCookieValue("HLAuthToken"));
+    // console.log("token: ", this.getCookieValue("HLAuthToken"));
 
     const options = {
       method: "GET",
@@ -105,7 +134,7 @@ class App extends Component {
     };
 
     return axios(options)
-      .then(res => res.data.assignedReviews)
+      .then(res => res.data)
       .catch(err => {
         console.log("there is an error", err.response);
         let errorMessage = err;
@@ -127,12 +156,13 @@ class App extends Component {
   }
 
   render() {
-    if (this.state.statusOK === false) {
+    // console.log("state at render: ", this.state);
+    if (this.state.statusOK == false) {
       return (
         <p className="error-message">{this.state.statusMessage.toString()}</p>
       );
     } else {
-      let incompleteProposals = this.state.assignedProposals.map(aProposal => {
+      let incompleteReviews = this.state.incompleteReviews.map(aProposal => {
         return (
           <ProposalRow
             {...aProposal}
@@ -142,29 +172,44 @@ class App extends Component {
         );
       });
 
+      let incompleteSection;
+      if (incompleteReviews.length == 0) {
+        incompleteSection = <p>Thank you for submitting these reviews.</p>;
+      } else {
+        incompleteSection = (
+          <div>
+            {" "}
+            <p>Please complete a review of the following proposals:</p>
+            <table className="table table-hover">
+              <thead>
+                <tr>
+                  <th className="text-left">Title</th>
+                  <th className="text-left">Lead</th>
+                  <th className="text-left">Tags</th>
+                </tr>
+              </thead>
+              <tbody>{incompleteReviews}</tbody>
+            </table>
+          </div>
+        );
+      }
+
+      let completedReviews = this.state.completedReviews.map(aProposal => {
+        return (
+          <ProposalRow
+            {...aProposal}
+            {...aProposal.idProposal}
+            key={aProposal._id}
+            ahandleRowClick={() =>
+              this.handleRowClick(aProposal.idProposal._id)
+            }
+          />
+        );
+      });
+
       return (
         <div className="App">
-          <p>Please complete a review of the following proposals:</p>
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                <th className="text-left">Title</th>
-                <th className="text-left">Lead</th>
-                <th className="text-left">Tags</th>
-              </tr>
-            </thead>
-            <tbody>{incompleteProposals}</tbody>
-          </table>
-
-          {this.state.displayModal === true && (
-            <ReviewModal
-              {...this.state.selected}
-              key={this.state.selected._id}
-              handleModalClose={this.handleClose}
-              handleModalSave={this.handleSave}
-            />
-          )}
-
+          {incompleteSection}
           <p>Completed Reviews</p>
           <table className="table table-hover">
             <thead>
@@ -174,13 +219,14 @@ class App extends Component {
                 <th className="text-left">Tags</th>
               </tr>
             </thead>
-            <tbody>{incompleteProposals}</tbody>
+            <tbody>{completedReviews}</tbody>
           </table>
 
           {this.state.displayModal === true && (
             <ReviewModal
-              {...this.state.selected}
-              key={this.state.selected._id}
+              proposal={this.state.selectedProposal}
+              review={this.state.selectedReview}
+              key={this.state.selectedProposal._id}
               handleModalClose={this.handleClose}
               handleModalSave={this.handleSave}
             />

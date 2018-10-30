@@ -162,7 +162,7 @@ class App extends Component {
             <input
               type="text"
               className="form-control"
-              placeholder="Keywords"
+              placeholder="Mots clés"
               aria-describedby="basic-addon2"
               onChange={this.handleKeywords}
               value={this.state.keywords}
@@ -193,7 +193,7 @@ class App extends Component {
               onChange={this.handleThemes}
               isMulti={true}
               options={themeOptions}
-              placeholder="Themes"
+              placeholder="Thèmes"
             />
           </div>
 
@@ -203,7 +203,7 @@ class App extends Component {
               onChange={this.handleLeads}
               isMulti={true}
               options={leadOptions}
-              placeholder="Lead Institutions"
+              placeholder="Institutions"
             />
           </div>
           <div className="col-md-1">

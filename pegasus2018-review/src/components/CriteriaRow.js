@@ -8,14 +8,17 @@ class CriteriaRow extends Component {
   }
 
   handleRadio(name, value) {
-    this.props.handleRadio(name, value);
+    console.log("clicked in Criteria Row");
+    // this.props.handleRadio(name, value);
   }
 
   render() {
     const scale = [10, 8, 6, 4, 2];
+    // console.log("criteria row props:", this.props);
     const radiobuttons = scale.map(score => {
       return (
         <RatingRadio
+          checked={this.props.scoreValue == score}
           key={score}
           handleRadio={this.handleRadio}
           score={score}

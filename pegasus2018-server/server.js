@@ -3,77 +3,114 @@ const express = require("express");
 var cors = require("cors");
 var bodyParser = require("body-parser");
 
+const _ = require("lodash");
 const multerClient = require("./utils/multer-client");
 const ftpClient = require("./utils/ftp-client");
 const mongoClient = require("./utils/mongo-client");
 const emailClient = require("./utils/email-client");
 const { authenticate } = require("./utils/authenticate");
+const { Proposal } = require("./models/proposal");
+const { Reviewer } = require("./models/reviewer");
+const { Review } = require("./models/review");
+const { ObjectID } = require("mongodb");
 
 const port = process.env.PORT || 8081;
 var app = express();
-app.use(cors({ origin: "*" }));
-// app.all("/", function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//   next();
-// });
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(port, () => {
-  console.log(`Server is up on port ${port}`);
+  console.log(
+    `Server is up on port ${port}.  Environment: ${process.env.NODE_ENV}`
+  );
 });
 
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.DB2);
 app.use(express.static("./public"));
 
-app.post("/reviewers/addReview", authenticate, (req, res) => {
-  console.log(req.body);
-  console.log(req.Reviewer.ContactKey);
-  mongoClient
-    .addReview(req)
-    .then(res.send("this is working"))
-    .catch(err => {
-      res.statusMessage =
-        "Sorry, an error was encountered while saving your application (Email Client): " +
-        err;
-      res.status(400).end();
-    });
+app.post("/reviewers/addReview/:id", authenticate, (req, res) => {
+  const reviewID =
+    req.params.id == "undefined" ? new ObjectID() : req.params.id;
+
+  var review = {
+    idReviewer: req.Reviewer._id,
+    idProposal: req.body.idProposal,
+    scoreTheme: req.body.scoreTheme,
+    scoreImpact: req.body.scoreImpact,
+    scoreMission: req.body.scoreMission,
+    scoreDiversity: req.body.scoreDiversity,
+    scoreCost: req.body.scoreCost,
+    recommendation: req.body.recommendation,
+    comments: req.body.comments
+  };
+
+  Review.update({ _id: reviewID }, review, {
+    upsert: true,
+    new: true
+  }).then(
+    doc => {
+      console.log({ doc });
+      res.send(doc);
+    },
+    err => {
+      console.log("error in saving", err);
+      res.status(400).send(err);
+    }
+  );
 });
 
 app.get("/reviewers/completed", authenticate, (req, res) => {
-  mongoClient
-    .getCompletedReviews(req.Reviewer.ContactKey)
-    .then(applications => {
+  Review.find({ idReviewer: req.Reviewer._id })
+    .populate("idProposal")
+    .then(reviews => {
       res.send({
-        applications
+        reviews
       });
     })
     .catch();
 });
 
 app.get("/reviewers/assigned", authenticate, (req, res) => {
-  console.log("new request: ", req);
-  mongoClient
-    .getAssignedReviews(req.Reviewer.ContactKey)
-    .then(applications => {
-      res.send({
-        reviewer: req.Reviewer,
-        assignedReviews: applications
-      });
-    })
-    .catch();
+  // console.log("new request: ", req);
+  console.log("reviewer id in here: ", req.Reviewer._id);
+  Proposal.find({ assignedReviewers: req.Reviewer._id }).then(returned => {
+    res.send(returned);
+  });
+
+  // mongoClient
+  //   .getAssignedReviews(req.Reviewer.ContactKey)
+  //   .then(applications => {
+  //     res.send({
+  //       reviewer: req.Reviewer,
+  //       assignedReviews: applications
+  //     });
+  //   })
+  //   .catch();
 });
 
 app.post("/adminupdate/:id", (req, res) => {
   console.log("post called", req.params.id);
-  mongoClient
-    .saveAssignment(req)
-    .then(res.send("this is working"))
-    .catch(err => {
-      res.statusMessage =
-        "Sorry, an error was encountered while saving your application (Email Client): " +
-        err;
-      res.status(400).end();
-    });
+  console.log("post called", req.body);
+  var body = _.pick(req.body, ["assignedReviewers", "tags", "notes"]);
+  Proposal.findOneAndUpdate(
+    { _id: req.params.id },
+    { $set: body },
+    { new: true }
+  ).then(updatedProposal => {
+    console.log({ updatedProposal });
+    res.send(updatedProposal);
+  });
+  // mongoClient
+  //   .saveAssignment(req)
+  //   .then(res.send("this is working"))
+  //   .catch(err => {
+  //     res.statusMessage =
+  //       "Sorry, an error was encountered while saving your application (Email Client): " +
+  //       err;
+  //     res.status(400).end();
+  //   });
 });
 
 // it's a little messy, can't do Promise.all because the next function needs output from previous function, can do async/await but need to work on try/catch blocks for them
@@ -89,12 +126,14 @@ app.post("/submit", (req, res) => {
         ftpClient
           .upload(req)
           .then(() => {
-            mongoClient
-              .saveToDB(req)
+            let thisProposal = new Proposal();
+            thisProposal
+              .parseAndSave(req)
               .then(result => {
+                console.log({ result });
                 emailClient
-                  .sendEmail(result.returned.ops[0])
-                  .then(res.send("ok"))
+                  .sendEmail(result)
+                  .then(res.send("done! email sent"))
                   .catch(err => {
                     res.statusMessage =
                       "Sorry, an error was encountered while saving your application (Email Client): " +
@@ -125,14 +164,20 @@ app.post("/submit", (req, res) => {
     });
 });
 
+// app.get("/proposals", (req, res) => {
+//   mongoClient.getProposals().then(proposals => {
+//     res.send(proposals);
+//   });
+// });
+
 app.get("/proposals", (req, res) => {
-  mongoClient.getProposals().then(proposals => {
+  Proposal.find({}).then(proposals => {
     res.send(proposals);
   });
 });
 
 app.get("/reviewers", (req, res) => {
-  mongoClient.getReviewers().then(reviewers => {
+  Reviewer.find({}).then(reviewers => {
     res.send(reviewers);
   });
 });

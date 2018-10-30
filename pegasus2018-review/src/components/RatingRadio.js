@@ -11,6 +11,7 @@ class RatingRadio extends Component {
   }
 
   render() {
+    // console.log("props of radio:", this.props);
     return (
       <td>
         <input
@@ -19,7 +20,8 @@ class RatingRadio extends Component {
           id={this.props.name}
           name={this.props.name}
           value={this.props.score}
-          onClick={this.handleClick}
+          onChange={this.handleClick}
+          checked={this.props.checked}
         />
       </td>
     );
