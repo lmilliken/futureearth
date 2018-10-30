@@ -3,6 +3,7 @@ const mongoClient = require("./mongo-client");
 const { Reviewer } = require("./../models/reviewer");
 
 var authenticate = async (req, res, next) => {
+  console.log("params id", req.params.id);
   var authOptions = {
     method: "GET",
     url: "https://api.connectedcommunity.org/api/v2.0/Contacts/GetWhoAmI",

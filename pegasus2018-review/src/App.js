@@ -172,6 +172,28 @@ class App extends Component {
         );
       });
 
+      let incompleteSection;
+      if (incompleteReviews.length == 0) {
+        incompleteSection = <p>Thank you for submitting these reviews.</p>;
+      } else {
+        incompleteSection = (
+          <div>
+            {" "}
+            <p>Please complete a review of the following proposals:</p>
+            <table className="table table-hover">
+              <thead>
+                <tr>
+                  <th className="text-left">Title</th>
+                  <th className="text-left">Lead</th>
+                  <th className="text-left">Tags</th>
+                </tr>
+              </thead>
+              <tbody>{incompleteReviews}</tbody>
+            </table>
+          </div>
+        );
+      }
+
       let completedReviews = this.state.completedReviews.map(aProposal => {
         return (
           <ProposalRow
@@ -187,18 +209,7 @@ class App extends Component {
 
       return (
         <div className="App">
-          <p>Please complete a review of the following proposals:</p>
-          <table className="table table-hover">
-            <thead>
-              <tr>
-                <th className="text-left">Title</th>
-                <th className="text-left">Lead</th>
-                <th className="text-left">Tags</th>
-              </tr>
-            </thead>
-            <tbody>{incompleteReviews}</tbody>
-          </table>
-
+          {incompleteSection}
           <p>Completed Reviews</p>
           <table className="table table-hover">
             <thead>

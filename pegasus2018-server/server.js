@@ -31,6 +31,9 @@ mongoose.connect(process.env.DB2);
 app.use(express.static("./public"));
 
 app.post("/reviewers/addReview/:id", authenticate, (req, res) => {
+  const reviewID =
+    req.params.id == "undefined" ? new ObjectID() : req.params.id;
+
   var review = {
     idReviewer: req.Reviewer._id,
     idProposal: req.body.idProposal,
@@ -43,7 +46,7 @@ app.post("/reviewers/addReview/:id", authenticate, (req, res) => {
     comments: req.body.comments
   };
 
-  Review.findOneAndUpdate({ _id: req.params._id }, review, {
+  Review.update({ _id: reviewID }, review, {
     upsert: true,
     new: true
   }).then(

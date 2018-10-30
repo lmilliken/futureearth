@@ -33,7 +33,7 @@ class RecommendationRow extends Component {
                 value="3"
                 className="form-radio"
                 checked={this.props.scoreRec == 3}
-                onClick={this.handleClick}
+                onChange={this.handleClick}
               />
             </td>
             <td>
@@ -44,7 +44,7 @@ class RecommendationRow extends Component {
                 value="1"
                 className="form-radio"
                 checked={this.props.scoreRec == 1}
-                onClick={this.handleClick}
+                onChange={this.handleClick}
               />
             </td>
             <td>
@@ -55,7 +55,7 @@ class RecommendationRow extends Component {
                 value="0"
                 className="form-radio"
                 checked={this.props.scoreRec == 0}
-                onClick={this.handleClick}
+                onChange={this.handleClick}
               />
             </td>
           </tr>

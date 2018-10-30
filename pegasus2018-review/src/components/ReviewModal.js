@@ -49,12 +49,19 @@ class ReviewModal extends Component {
 
   handleSave(event) {
     event.preventDefault();
-    console.log("save", this.state.selectedReview);
+    console.log("save", this.state);
     // this.props.handleModalSave(
     //   this.state.assignedReviewers,
     //   this.state.tags,
     //   this.state.notes
     // );
+
+    console.log(
+      "url: ",
+      `http://localhost:8081/reviewers/addReview/${
+        this.state.selectedReview._id
+      }`
+    );
     axios({
       method: "POST",
       url: `http://localhost:8081/reviewers/addReview/${
@@ -96,7 +103,7 @@ class ReviewModal extends Component {
   }
 
   render() {
-    // console.log("modal state: ", this.state.selectedReview.recommendation);
+    console.log("modal state: ", this.state.selectedProposal);
     const criteria = [
       {
         name: "scoreTheme",
@@ -150,11 +157,14 @@ class ReviewModal extends Component {
           <Modal.Body style={modalBody}>
             this is the modal body
             <center>
-              <a target="_blank" href={this.props.linkToProposal}>
+              <a
+                target="_blank"
+                href={this.state.selectedProposal.proposalLink}
+              >
                 Proposal
               </a>{" "}
               -{" "}
-              <a target="_blank" href={this.props.linkToBudget}>
+              <a target="_blank" href={this.state.selectedProposal.budgetLink}>
                 Budget
               </a>
             </center>
