@@ -1,8 +1,8 @@
-require("dotenv").config();
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const MongoClient = require("mongodb").MongoClient;
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const MongoClient = require('mongodb').MongoClient;
 
 const port = process.env.PORT || 8081;
 let app = express();
@@ -13,9 +13,10 @@ app.listen(port, () => {
   console.log(`Server is up on port ${port}`);
 });
 
-const util = require("util");
+const util = require('util');
 
-app.get("/mtl-consortium-search", (req, res) => {
+app.get('/mtl-consortium-search', (req, res) => {
+  console.log('environment: ', process.env.NODE_ENV);
   // console.log("called params", req.query);
   let queryParams;
   if (!req.query.keywords && !req.query.themes && !req.query.leads) {
@@ -27,7 +28,7 @@ app.get("/mtl-consortium-search", (req, res) => {
     }
 
     if (req.query.themes) {
-      req.query.themes.map(item => {
+      req.query.themes.map((item) => {
         let obj = {};
         let thisItem = JSON.parse(item);
         obj[thisItem.value] = 1;
@@ -40,7 +41,7 @@ app.get("/mtl-consortium-search", (req, res) => {
     }
     if (req.query.leads) {
       let leadArray = [];
-      leads = req.query.leads.map(lead => {
+      leads = req.query.leads.map((lead) => {
         let item = JSON.parse(lead);
         leadArray.push(item.value);
       });
@@ -58,13 +59,13 @@ app.get("/mtl-consortium-search", (req, res) => {
     process.env.DB,
     { useNewUrlParser: true },
     function(err, client) {
-      const db = client.db("fe");
+      const db = client.db('fe');
       if (err) {
         console.log(err);
         return res.end("somethings's wrong");
       }
-      console.log("connected");
-      db.collection("mtl-consortium")
+      console.log('connected');
+      db.collection('mtl-consortium')
         .find(queryParams)
         .sort({ INST_NAME: 1 })
         .toArray()
@@ -75,24 +76,25 @@ app.get("/mtl-consortium-search", (req, res) => {
   );
 });
 
-// app.get("/mtl-consortium", (req, res) => {
-//   console.log("called", process.env.DB);
-//   MongoClient.connect(
-//     process.env.DB,
-//     { useNewUrlParser: true },
-//     function(err, client) {
-//       const db = client.db("fe");
-//       if (err) {
-//         console.log(err);
-//         return res.end("somethings's wrong");
-//       }
-//       console.log("connected");
-//       db.collection("mtl-consortium")
-//         .find()
-//         .toArray()
-//         .then(function(returned) {
-//           res.send(returned);
-//         });
-//     }
-//   );
-// });
+app.get('/mtl-consortium', (req, res) => {
+  console.log('called', process.env.DB);
+  MongoClient.connect(
+    process.env.DB,
+    { useNewUrlParser: true },
+    function(err, client) {
+      const db = client.db('fe');
+      if (err) {
+        console.log(err);
+        return res.end("somethings's wrong");
+      }
+      console.log('connected');
+      db.collection('mtl-consortium')
+        .find()
+        .toArray()
+        .then(function(returned) {
+          res.send(returned);
+        });
+    }
+  );
+});
+module.exports = { app };
