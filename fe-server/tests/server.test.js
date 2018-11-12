@@ -5,8 +5,16 @@ const { app } = require('./../server');
 
 describe('search mtl-consortium members', () => {
   it('should return all results', (done) => {
-    expect(30).toBe(30);
-    done();
+    // expect(2).toBe(1);
+    // done();
+    request(app)
+      .get('/mtl-consortium-search')
+      .expect(400)
+      .expect((res) => {
+        console.log('something');
+        expect(res.body.something.length).toBe(11);
+      })
+      .end(done());
   });
 });
 

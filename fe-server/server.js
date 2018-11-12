@@ -1,8 +1,12 @@
 require('dotenv').config();
+require('./config/config');
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient;
+// var { mongoose } = require('./db/mongoose');
+const { mongoose } = require('./db/mongoose');
+const { Member } = require('./models/mtl-member');
 
 const port = process.env.PORT || 8081;
 let app = express();
@@ -54,26 +58,36 @@ app.get('/mtl-consortium-search', (req, res) => {
     );
   }
 
-  // res.send("this is your response");
-  MongoClient.connect(
-    process.env.DB,
-    { useNewUrlParser: true },
-    function(err, client) {
-      const db = client.db('fe');
-      if (err) {
-        console.log(err);
-        return res.end("somethings's wrong");
+  Member.find({})
+    .then(
+      (members) => {
+        res.send({ members });
+      },
+      (e) => {
+        res.status(400).send(e);
       }
-      console.log('connected');
-      db.collection('mtl-consortium')
-        .find(queryParams)
-        .sort({ INST_NAME: 1 })
-        .toArray()
-        .then(function(returned) {
-          res.send(returned);
-        });
-    }
-  );
+    )
+    .catch((e) => console.log(e));
+  // res.send("this is your response");
+  // MongoClient.connect(
+  //   process.env.DB,
+  //   { useNewUrlParser: true },
+  //   function(err, client) {
+  //     const db = client.db('fe');
+  //     if (err) {
+  //       console.log(err);
+  //       return res.end("somethings's wrong");
+  //     }
+  //     console.log('connected');
+  //     db.collection('mtl-consortium')
+  //       .find(queryParams)
+  //       .sort({ INST_NAME: 1 })
+  //       .toArray()
+  //       .then(function(returned) {
+  //         res.send(returned);
+  //       });
+  //   }
+  // );
 });
 
 app.get('/mtl-consortium', (req, res) => {
