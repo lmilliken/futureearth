@@ -14,14 +14,16 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.listen(port, () => {
+  console.log(
+    `Environment: ${process.env.NODE_ENV}, ${process.env.MONGODB_URI}`
+  );
   console.log(`Server is up on port ${port}`);
 });
 
 const util = require('util');
 
 app.get('/mtl-consortium-search', (req, res) => {
-  console.log('environment: ', process.env.NODE_ENV);
-  // console.log("called params", req.query);
+  console.log('called params', req.query);
   let queryParams;
   if (!req.query.keywords && !req.query.themes && !req.query.leads) {
   } else {
@@ -34,23 +36,17 @@ app.get('/mtl-consortium-search', (req, res) => {
     if (req.query.themes) {
       req.query.themes.map((item) => {
         let obj = {};
-        let thisItem = JSON.parse(item);
-        obj[thisItem.value] = 1;
+        obj[item] = 1;
         queryParams.$or.push(obj);
       });
       // console.log(typeof queryParams.$or);
       // queryParams.$or.push({ something: "something" });
 
-      // console.log({ queryParams });
+      console.log({ queryParams });
     }
     if (req.query.leads) {
-      let leadArray = [];
-      leads = req.query.leads.map((lead) => {
-        let item = JSON.parse(lead);
-        leadArray.push(item.value);
-      });
-      console.log({ leadArray });
-      queryParams.$or.push({ LEAD_INST: { $in: leadArray } });
+      console.log('leads: ', req.query.leads);
+      queryParams.$or.push({ LEAD_INST: { $in: req.query.leads } });
     }
 
     console.log(
@@ -58,7 +54,8 @@ app.get('/mtl-consortium-search', (req, res) => {
     );
   }
 
-  Member.find({})
+  Member.find(queryParams)
+    .sort({ INST_NAME: 1 })
     .then(
       (members) => {
         res.send({ members });
@@ -68,6 +65,42 @@ app.get('/mtl-consortium-search', (req, res) => {
       }
     )
     .catch((e) => console.log(e));
+
+  // let queryParams;
+  // if (!req.query.keywords && !req.query.themes && !req.query.leads) {
+  // } else {
+  //   queryParams = { $or: [] };
+
+  //   if (req.query.keywords) {
+  //     queryParams.$or.push({ $text: { $search: req.query.keywords } });
+  //   }
+
+  //   if (req.query.themes) {
+  //     req.query.themes.map((item) => {
+  //       let obj = {};
+  //       let thisItem = JSON.parse(item);
+  //       obj[thisItem.value] = 1;
+  //       queryParams.$or.push(obj);
+  //     });
+  //     // console.log(typeof queryParams.$or);
+  //     // queryParams.$or.push({ something: "something" });
+
+  //     // console.log({ queryParams });
+  //   }
+  //   if (req.query.leads) {
+  //     let leadArray = [];
+  //     leads = req.query.leads.map((lead) => {
+  //       let item = JSON.parse(lead);
+  //       leadArray.push(item.value);
+  //     });
+  //     console.log({ leadArray });
+  //     queryParams.$or.push({ LEAD_INST: { $in: leadArray } });
+  //   }
+
+  //   console.log(
+  //     util.inspect(queryParams, false, null, true /* enable colors */)
+  //   );
+  // }
   // res.send("this is your response");
   // MongoClient.connect(
   //   process.env.DB,

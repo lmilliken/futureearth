@@ -3,48 +3,37 @@ const request = require('supertest'); //for testing express  routes
 
 const { app } = require('./../server');
 
-describe('search mtl-consortium members', () => {
+describe('SEARCH MTL-CONSORTIUM MEMBERS', () => {
   it('should return all results', (done) => {
     // expect(2).toBe(1);
     // done();
     request(app)
       .get('/mtl-consortium-search')
-      .expect(400)
+      .expect(200)
       .expect((res) => {
-        console.log('something');
-        expect(res.body.something.length).toBe(11);
+        expect(res.body.members.length).toBe(9);
       })
-      .end(done());
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        done();
+      });
+  });
+
+  it('should only return K_CP results', (done) => {
+    const themes = ['K_CP'];
+    request(app)
+      .get('/mtl-consortium-search?themes[]=K_CP')
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.members.length).toBe(3);
+      })
+      .end((err, res) => {
+        if (err) {
+          return done(err);
+        }
+        done();
+      });
   });
 });
-
-// describe('search mtl-consortium members'),
-//   () => {
-//     it('should return all results'),
-//       (done) => {
-//         request(app)
-//           .get('/mtl-consortium-search')
-//           .send({ something })
-//           .expect(200)
-//           .expect((res) => {
-//             expect(res.body).toBe;
-//           });
-//       };
-//   };
-
-// describe('PEGASUS'),
-//   () => {
-//     describe('Application Submission'),
-//       () => {
-//         it('should submit application'),
-//           (done) => {
-//             request(app)
-//               .post('/')
-//               .send({ application })
-//               .expect(200)
-//               .end(done());
-//           };
-//       };
-
-//     describe('Admin');
-//   };

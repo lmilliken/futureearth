@@ -1,8 +1,15 @@
-import React, { Component } from "react";
-import "./App.css";
-import axios from "axios";
-import Select from "react-select";
-import Card from "./components/Card";
+import React, { Component } from 'react';
+import './App.css';
+import axios from 'axios';
+import Select from 'react-select';
+import Card from './components/Card';
+require('dotenv').config();
+
+const API =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3001'
+    : process.env.HEROKUAPI;
+console.log('in here', API);
 
 class App extends Component {
   constructor(props) {
@@ -24,47 +31,51 @@ class App extends Component {
     this.setState({ keywords: [] });
   }
 
-  handleKeywords = event => {
+  handleKeywords = (event) => {
     const words = event.target.value
       .trim()
       .split(/[,]+/)
-      .join(" ");
+      .join(' ');
     this.setState({ keywords: event.target.value });
   };
 
   search(e) {
     // console.log("search leads: ", this.state.selectedLeads);
     // https://fe-server.herokuapp.com/
+
     e.preventDefault();
+    console.log(this.state.selectedThemes);
     return axios
-      .get("https://fe-server.herokuapp.com/mtl-consortium-search", {
+      .get(`${API}/mtl-consortium-search`, {
         params: {
           keywords:
             this.state.keywords.length > 0
               ? this.state.keywords
                   .trim()
                   .split(/[,]+/)
-                  .join(" ")
-              : "",
+                  .join(' ')
+              : '',
           themes: this.state.selectedThemes,
           leads: this.state.selectedLeads
         }
       })
-      .then(res => {
+      .then((res) => {
         console.log(res);
-        this.setState({ searchResults: res.data });
+        this.setState({ searchResults: res.data.members });
       })
-      .catch(err => console.log(err));
+      .catch((err) => console.log(err));
   }
 
-  handleLeads = selectedLeads => {
-    this.setState({ selectedLeads });
-    console.log(`Option selected:`, selectedLeads);
+  handleLeads = (selectedLeads) => {
+    let leads = [];
+    selectedLeads.map((object) => leads.push(object.value));
+    this.setState({ selectedLeads: leads });
   };
 
-  handleThemes = selectedThemes => {
-    this.setState({ selectedThemes });
-    console.log(`Option selected:`, selectedThemes);
+  handleThemes = (selectedThemes) => {
+    let themes = [];
+    selectedThemes.map((object) => themes.push(object.value));
+    this.setState({ selectedThemes: themes });
   };
 
   // getInstitutions() {
@@ -77,52 +88,52 @@ class App extends Component {
     // let cards = this.state.institutions.map(member => {
     //   return <Card {...member} key={member._id} />;
     // });
-
-    console.log("state", this.state);
+    console.log({ API });
+    console.log('state', this.state);
     const themeOptions = [
-      { value: "K_CP", label: "Consumption & Production" },
-      { value: "K_DECARB", label: "Decarbonisation" },
-      { value: "K_FE", label: "Finance & Economics" },
-      { value: "K_FWE", label: "Food-Water-Energy" },
-      { value: "K_HEALTH", label: "Health" },
-      { value: "K_NA", label: "Natural Assets" },
-      { value: "K_OCEAN", label: "Ocean" },
-      { value: "K_RISK", label: "Risk" },
-      { value: "K_URBAN", label: "Urban" }
+      { value: 'K_CP', label: 'Consumption & Production' },
+      { value: 'K_DECARB', label: 'Decarbonisation' },
+      { value: 'K_FE', label: 'Finance & Economics' },
+      { value: 'K_FWE', label: 'Food-Water-Energy' },
+      { value: 'K_HEALTH', label: 'Health' },
+      { value: 'K_NA', label: 'Natural Assets' },
+      { value: 'K_OCEAN', label: 'Ocean' },
+      { value: 'K_RISK', label: 'Risk' },
+      { value: 'K_URBAN', label: 'Urban' }
     ];
 
     const leadOptions = [
       {
-        value: "École de technologie supérieure",
-        label: "École de technologie supérieure"
+        value: 'École de technologie supérieure',
+        label: 'École de technologie supérieure'
       },
       {
-        value: "École polytechnique de Montréal",
-        label: "École polytechnique de Montréal"
+        value: 'École polytechnique de Montréal',
+        label: 'École polytechnique de Montréal'
       },
-      { value: "HEC Montréal", label: "HEC Montréal" },
-      { value: "Université Laval", label: "Université Laval" },
-      { value: "Université de Montréal", label: "Université de Montréal" },
-      { value: "Université de Sherbrooke", label: "Université de Sherbrooke" },
-      { value: "Université du Québec", label: "Université du Québec" },
+      { value: 'HEC Montréal', label: 'HEC Montréal' },
+      { value: 'Université Laval', label: 'Université Laval' },
+      { value: 'Université de Montréal', label: 'Université de Montréal' },
+      { value: 'Université de Sherbrooke', label: 'Université de Sherbrooke' },
+      { value: 'Université du Québec', label: 'Université du Québec' },
       {
-        value: "Université du Québec à Chicoutimi",
-        label: "Université du Québec à Chicoutimi"
-      },
-      {
-        value: "Université du Québec à Montréal",
-        label: "Université du Québec à Montréal"
+        value: 'Université du Québec à Chicoutimi',
+        label: 'Université du Québec à Chicoutimi'
       },
       {
-        value: "Université du Québec en Abitibi-Témiscamingue",
-        label: "Université du Québec en Abitibi-Témiscamingue"
+        value: 'Université du Québec à Montréal',
+        label: 'Université du Québec à Montréal'
       },
-      { value: "McGill University", label: "McGill University" },
-      { value: "Concordia University", label: "Concordia University" },
-      { value: "INRS", label: "INRS" },
       {
-        value: "Université du Québec à Rimouski",
-        label: "Université du Québec à Rimouski"
+        value: 'Université du Québec en Abitibi-Témiscamingue',
+        label: 'Université du Québec en Abitibi-Témiscamingue'
+      },
+      { value: 'McGill University', label: 'McGill University' },
+      { value: 'Concordia University', label: 'Concordia University' },
+      { value: 'INRS', label: 'INRS' },
+      {
+        value: 'Université du Québec à Rimouski',
+        label: 'Université du Québec à Rimouski'
       }
     ];
     // console.log(Object.keys(themes));
@@ -150,7 +161,7 @@ class App extends Component {
 
     let cards;
     if (this.state.searchResults.length > 0) {
-      cards = this.state.searchResults.map(thisOne => {
+      cards = this.state.searchResults.map((thisOne) => {
         return <Card {...thisOne} key={thisOne._id} />;
       });
     }
@@ -230,23 +241,23 @@ class App extends Component {
 }
 
 const constainerStyle = {
-  display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
-  gridGap: "15px",
-  gridAutoRows: "auto"
+  display: 'grid',
+  gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+  gridGap: '15px',
+  gridAutoRows: 'auto'
 };
 
 const searchClear = {
-  position: "absolute",
-  right: "20px",
-  top: "0",
-  bottom: "0",
-  height: "14px",
-  margin: "auto",
+  position: 'absolute',
+  right: '20px',
+  top: '0',
+  bottom: '0',
+  height: '14px',
+  margin: 'auto',
   // marginRight: "3px",
-  fontSize: "14px",
-  cursor: "pointer",
-  color: "#ccc"
+  fontSize: '14px',
+  cursor: 'pointer',
+  color: '#ccc'
 };
 
 export default App;
